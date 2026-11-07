@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2026 WhatStash contributors
+  ~
+  ~ Licensed under the GNU General Public License v3
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M54,26 L54,56 M43,45 L54,56 L65,45 M33,54 L33,69 Q33,77 41,77 L67,77 Q75,77 75,69 L75,54"
+        android:strokeColor="?android:textColorPrimary"
+        android:strokeWidth="7"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>
