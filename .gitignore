@@ -11,3 +11,5 @@ private.properties
 .externalNativeBuild
 .cxx
 .kotlin/
+*.jks
+*.keystore
