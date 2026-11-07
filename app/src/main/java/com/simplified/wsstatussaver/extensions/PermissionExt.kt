@@ -24,13 +24,9 @@ import android.content.Intent
 import android.content.UriPermission
 import android.net.Uri
 import android.os.Build
-import android.os.storage.StorageManager
 import android.provider.DocumentsContract
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
-import androidx.core.content.IntentCompat
-import androidx.core.content.getSystemService
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
@@ -142,11 +138,14 @@ fun Fragment.syncPermissions() {
 fun Fragment.directoryAccessRequestIntent(directory: WaDirectory = WaDirectory.Media): Intent {
     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
     if (hasQ()) {
-        val storageManager = requireContext().getSystemService<StorageManager>()!!
-        val treeIntent = storageManager.primaryStorageVolume.createOpenDocumentTreeIntent()
-        val uri = IntentCompat.getParcelableExtra(treeIntent, DocumentsContract.EXTRA_INITIAL_URI, Uri::class.java)
-        val scheme = uri.toString().replace("/root/", "/document/") + directory.path.encodedUrl()
-        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, scheme.toUri())
+        // Open the picker at the WhatsApp folder. Build the document URI explicitly
+        // ("primary:Android/media") instead of rewriting the volume's initial URI, whose format
+        // differs between Android versions (on Android 17 the picker fell back to the storage root).
+        val initialUri = DocumentsContract.buildDocumentUri(
+            EXTERNAL_STORAGE_AUTHORITY,
+            "$PRIMARY_VOLUME_ID:${directory.path}"
+        )
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, initialUri)
     }
     intent.setFlags(
         Intent.FLAG_GRANT_READ_URI_PERMISSION or
@@ -155,3 +154,5 @@ fun Fragment.directoryAccessRequestIntent(directory: WaDirectory = WaDirectory.M
     )
     return intent
 }
+private const val EXTERNAL_STORAGE_AUTHORITY = "com.android.externalstorage.documents"
+private const val PRIMARY_VOLUME_ID = "primary"

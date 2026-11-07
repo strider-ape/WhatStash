@@ -83,8 +83,8 @@ Done on 2026-11-07 unless marked open.
    - [x] Deleted-message recovery shows its opt-in terms; notification access was not granted during the test
    - [x] Launcher icon sits next to WhatsApp in the app drawer
    - [ ] Android 10 or older, WhatsApp Business, and real video statuses (none were available)
-   - [ ] Minor: the folder picker opens at the storage root on first use instead of Android/media
-   - [ ] Minor: a freshly saved status shows "Jan 1, 1970" in the Saved tab until the list is refreshed
+   - [x] Fixed: the folder picker opened at the storage root on first use instead of Android/media
+   - [x] Fixed: a freshly saved status showed "Jan 1, 1970" in the Saved tab until the list was refreshed
 
 ## Phase 2: Better than the original (v1.1)
 

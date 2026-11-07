@@ -249,9 +249,12 @@ class StatusesRepositoryImpl(
     private fun Cursor.getSavedStatus(type: StatusType): SavedStatus {
         val mediaUri = ContentUris.withAppendedId(type.contentUri, getLong(0))
         val name = getString(1)
-        val dateModified = getLong(2)
+        // MediaStore dates are in seconds. DATE_MODIFIED can still be 0 right after a save,
+        // so fall back to DATE_ADDED (set on insert), then to the current time.
+        val dateSeconds = getLong(2).takeIf { it > 0 } ?: getLong(5).takeIf { it > 0 }
+        val dateModified = dateSeconds?.times(1000) ?: System.currentTimeMillis()
         val size = getLong(3)
-        return SavedStatus(type, name, mediaUri, dateModified * 1000, size, null)
+        return SavedStatus(type, name, mediaUri, dateModified, size, null)
     }
 
     override suspend fun share(status: Status): ShareData {
@@ -439,15 +442,15 @@ class StatusesRepositoryImpl(
         }
 
         var uri: Uri? = null
-        var stream: OutputStream? = null
         val resolver = contentResolver
         try {
             uri = resolver.insert(contentUri, values)
             if (uri != null) {
-                stream = resolver.openOutputStream(uri)
-                if (stream != null) {
+                resolver.openOutputStream(uri)?.use { stream ->
                     inputStream.copyTo(stream, SAVE_BUFFER_SIZE)
                 }
+                // Notify only after the stream is closed: MediaStore fills in DATE_MODIFIED on close,
+                // and observers that reload earlier would read 0 (shown as Jan 1, 1970).
                 resolver.notifyChange(contentUri, null)
             }
         } catch (e: IOException) {
@@ -455,8 +458,6 @@ class StatusesRepositoryImpl(
                 resolver.delete(uri, null, null)
             }
             throw e
-        } finally {
-            stream?.close()
         }
         return uri
     }

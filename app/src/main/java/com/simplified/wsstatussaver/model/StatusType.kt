@@ -58,7 +58,8 @@ enum class StatusType(@StringRes val nameRes: Int, val format: String, private v
             MediaColumns.DISPLAY_NAME,
             MediaColumns.DATE_MODIFIED,
             MediaColumns.SIZE,
-            MediaColumns.RELATIVE_PATH
+            MediaColumns.RELATIVE_PATH,
+            MediaColumns.DATE_ADDED
         )
         val entries = SaveLocation.entries
         val selection = entries.joinToString(" OR ") { "${MediaColumns.RELATIVE_PATH} LIKE ?" }
