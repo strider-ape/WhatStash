@@ -37,7 +37,7 @@ Español
 
 ## Objetivos
 
-* **Sin publicidad, sin rastreo, sin cuentas** y, al final, sin el permiso `INTERNET`
+* **Sin publicidad, sin rastreo, sin cuentas** y sin el permiso `INTERNET`
 * **Distribución solo en canales de código abierto:** GitHub Releases, IzzyOnDroid y F-Droid (no Google Play)
 * **Aparece junto a WhatsApp** en el cajón de aplicaciones
 * Honestidad sobre lo posible: WhatsApp no guarda en el archivo quién publicó un estado, así que ninguna app puede filtrar estados por contacto
@@ -74,10 +74,11 @@ Aún no hay versión publicada. Cuando esté lista, WhatStash se publicará en
 ```bash
 git clone https://github.com/strider-ape/WhatStash.git
 cd WhatStash
-./gradlew assembleFdroidDebug
+./gradlew assembleDebug
 ```
 
-Las compilaciones de depuración no necesitan claves de firma ni archivos de servicios de Google.
+Requiere JDK 21. No hacen falta claves de firma ni archivos de servicios de Google. Sin un archivo
+`keystore.properties`, las compilaciones de lanzamiento se firman con la clave de depuración.
 
 ## Contribuciones
 
@@ -87,8 +88,8 @@ Se agradecen issues y pull requests. Consulta [CONTRIBUTING (en inglés)](CONTRI
 ## Privacidad
 
 WhatStash solo lee los archivos de estados que WhatsApp ya guardó en tu dispositivo, a través de una carpeta
-a la que tú das acceso. La analítica y el comprobador de actualizaciones heredados de WhatSave se están
-eliminando; mientras tanto, consulta [PRIVACY (en inglés)](PRIVACY.md) para ver la política original.
+a la que tú das acceso. No tiene permiso de internet, analítica ni comprobador de actualizaciones.
+Consulta [PRIVACY (en inglés)](PRIVACY.md).
 
 ## Créditos
 

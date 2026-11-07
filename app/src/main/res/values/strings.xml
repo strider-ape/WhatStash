@@ -94,13 +94,10 @@
     <string name="about_title">About</string>
     <string name="about_summary">Version, links, contact.</string>
     <string name="version_x">Version %s</string>
-    <string name="author_title">Author</string>
-    <string name="contact_title">Contact</string>
-    <string name="contact_summary">If you need help or support.</string>
+    <string name="original_author_title">Original author (WhatSave)</string>
+    <string name="maintainer_title">Maintainer</string>
     <string name="latest_release_title">Latest release</string>
     <string name="latest_release_summary">View the latest version of the app and recent changes.</string>
-    <string name="translations_title">Translations</string>
-    <string name="translations_summary">You can help us by translating this app into your language.</string>
     <string name="fork_on_github_title">Fork on GitHub</string>
     <string name="fork_on_github_summary">View, fork or download app sources.</string>
     <string name="report_bugs_title">Report bugs</string>

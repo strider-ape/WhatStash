@@ -68,11 +68,7 @@
     <string name="about_title">אודות</string>
     <string name="about_summary">גרסה, קישורים, יצירת קשר.</string>
     <string name="version_x">גרסה %s</string>
-    <string name="author_title">יוצר</string>
-    <string name="contact_title">יצירת קשר</string>
-    <string name="contact_summary">אם אתה צריך עזרה או תמיכה.</string>
     <string name="latest_release_title">העידכון האחרון</string>
-    <string name="translations_title">תרגום</string>
     <string name="fork_on_github_title">מזלג ב-GitHub</string>
     <string name="fork_on_github_summary">הצג, מזלג או הורד קוד מקור.</string>
     <string name="report_bugs_summary">פתח את דף מעקב הבעיות ב-GitHub.</string>
@@ -162,7 +158,6 @@
     <string name="quick_deletion_title">מחיקה מהירה</string>
     <string name="latest_release_summary">הצג את הגרסה העדכנית ביותר של האפליקציה ואת השינויים האחרונים.</string>
     <string name="report_bugs_title">דווח באגים</string>
-    <string name="translations_summary">אתה יכול לעזור לנו על ידי תרגום אפליקציה זו לשפה שלך.</string>
     <string name="privacy_and_terms_summary">עיין במדיניות הפרטיות ובתנאי השימוש שלנו.</string>
     <string name="confirm_device_credentials">עליך לאמת את האישורים שלך לפני השימוש בכלי זה.</string>
     <string name="message_view_term_1">פונקציה זו קוראת את התוכן של התראות ווטסאפ כדי לשמור הודעות שהתקבלו.</string>

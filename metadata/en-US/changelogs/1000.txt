@@ -1,0 +1,4 @@
+First WhatStash release, based on WhatSave 2.1.0-beta.3:
+* New name, app ID and icon
+* No internet permission: the update checker and Firebase analytics are removed
+* Updated to Android 16 (target) and current libraries

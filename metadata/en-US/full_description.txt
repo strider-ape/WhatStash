@@ -1,12 +1,18 @@
-A simple app with Material 3 UI that helps you save WhatsApp statuses in the easiest way, along with other cool features:
+WhatStash saves the photo and video statuses your WhatsApp and WhatsApp Business contacts post, so you can keep them after they expire.
 
-* Supports all Android versions starting from 7.0 Nougat
-* Material You on Android 12+
-* Preview and save files
-* Chat without saving the number
-* Recover deleted messages
-* Night mode
-* Black theme
-* No ADs
-* No watermark
-* It's free!
+It is private by design: WhatStash has no internet permission, no ads, no analytics and no accounts. It only reads the status files WhatsApp has already stored on your phone, from a folder you choose to share.
+
+Features:
+
+* WhatsApp and WhatsApp Business statuses (images and videos)
+* Built-in image viewer and video player with playback speed
+* Save, share and select multiple statuses at once
+* Chat with a number without saving it as a contact
+* Optional recovery of deleted messages, stored only on your device
+* Material You on Android 12+, night mode and black theme
+* Supports Android 7.0 and newer
+* No watermark, free and open source (GPL-3.0)
+
+WhatStash is based on WhatSave by Christians Martínez A.
+
+WhatStash is not affiliated with WhatsApp or Meta Platforms, Inc.

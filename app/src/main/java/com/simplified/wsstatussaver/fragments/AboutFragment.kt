@@ -13,17 +13,14 @@
  */
 package com.simplified.wsstatussaver.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.core.app.ShareCompat
-import androidx.core.net.toUri
 import androidx.core.view.doOnPreDraw
 import com.google.android.material.transition.MaterialFadeThrough
-import com.simplified.wsstatussaver.BuildConfig
 import com.simplified.wsstatussaver.R
 import com.simplified.wsstatussaver.databinding.FragmentAboutBinding
 import com.simplified.wsstatussaver.dialogs.LicensesDialog
@@ -34,6 +31,7 @@ import com.simplified.wsstatussaver.getApp
 
 /**
  * @author Christians M. A. (mardous)
+ * Modified for WhatStash: credits the original author and links to the WhatStash repository.
  */
 class AboutFragment : BaseFragment(R.layout.fragment_about), View.OnClickListener {
 
@@ -51,12 +49,10 @@ class AboutFragment : BaseFragment(R.layout.fragment_about), View.OnClickListene
         binding.scrollView.applyBottomWindowInsets()
         binding.toolbar.setTitle(R.string.about_title)
         binding.appVersion.setSummary(getString(R.string.version_x, getApp().fullVersionName))
-        binding.appVersion.setOnClickListener(this)
-        binding.contact.setOnClickListener(this)
         binding.author.setOnClickListener(this)
+        binding.maintainer.setOnClickListener(this)
         binding.latestRelease.setOnClickListener(this)
         binding.forkOnGithub.setOnClickListener(this)
-        binding.translations.setOnClickListener(this)
         binding.issueTracker.setOnClickListener(this)
         binding.legalNotices.setOnClickListener(this)
         statusesActivity.setSupportActionBar(binding.toolbar)
@@ -85,18 +81,9 @@ class AboutFragment : BaseFragment(R.layout.fragment_about), View.OnClickListene
 
     override fun onClick(v: View) {
         when (v) {
-            binding.contact -> {
-                val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-                    data = "mailto:".toUri()
-                    putExtra(Intent.EXTRA_EMAIL, arrayOf("mardous.contact@gmail.com"))
-                    putExtra(Intent.EXTRA_SUBJECT, "${getString(R.string.app_name)} - Support & questions")
-                }
-                startActivity(Intent.createChooser(emailIntent, getString(R.string.contact_title)))
-            }
-
             binding.author -> requireContext().openWeb(MARDOUS_URL)
+            binding.maintainer -> requireContext().openWeb(MAINTAINER_URL)
             binding.latestRelease -> requireContext().openWeb(LATEST_RELEASE_URL)
-            binding.translations -> requireContext().openWeb(TRANSLATIONS_URL)
             binding.forkOnGithub -> requireContext().openWeb(APP_GITHUB_URL)
             binding.issueTracker -> requireContext().openWeb(ISSUE_TRACKER_URL)
             binding.legalNotices -> LicensesDialog().show(childFragmentManager, "OSS_LICENSES")
@@ -104,12 +91,11 @@ class AboutFragment : BaseFragment(R.layout.fragment_about), View.OnClickListene
     }
 
     companion object {
-        private const val TRANSLATIONS_URL = "https://hosted.weblate.org/projects/whatsave/"
         private const val MARDOUS_URL = "https://github.com/mardous"
-        private const val APP_GITHUB_URL = "$MARDOUS_URL/WhatSave"
-        private const val APP_FDROID_URL = "https://f-droid.org/packages/${BuildConfig.APPLICATION_ID}"
+        private const val MAINTAINER_URL = "https://github.com/strider-ape"
+        private const val APP_GITHUB_URL = "$MAINTAINER_URL/WhatStash"
         private const val LATEST_RELEASE_URL = "$APP_GITHUB_URL/releases/latest"
         private const val ISSUE_TRACKER_URL = "$APP_GITHUB_URL/issues"
-        const val PRIVACY_POLICY = "$APP_GITHUB_URL/blob/master/PRIVACY.md"
+        const val PRIVACY_POLICY = "$APP_GITHUB_URL/blob/main/PRIVACY.md"
     }
 }

@@ -69,16 +69,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:listItemIcon="@drawable/ic_person_24dp"
-                app:listItemTitle="@string/author_title"
-                app:listItemSummary="@string/developer_name"/>
+                app:listItemTitle="@string/original_author_title"
+                app:listItemSummary="@string/original_author_name"/>
 
             <com.simplified.wsstatussaver.views.ListItemView
-                android:id="@+id/contact"
+                android:id="@+id/maintainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:listItemIcon="@drawable/ic_mail_24dp"
-                app:listItemTitle="@string/contact_title"
-                app:listItemSummary="@string/contact_summary"/>
+                app:listItemIcon="@drawable/ic_person_24dp"
+                app:listItemTitle="@string/maintainer_title"
+                app:listItemSummary="@string/maintainer_name"/>
 
             <com.simplified.wsstatussaver.views.ListItemView
                 android:id="@+id/latest_release"
@@ -87,14 +87,6 @@
                 app:listItemIcon="@drawable/ic_new_releases_24dp"
                 app:listItemTitle="@string/latest_release_title"
                 app:listItemSummary="@string/latest_release_summary"/>
-
-            <com.simplified.wsstatussaver.views.ListItemView
-                android:id="@+id/translations"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:listItemIcon="@drawable/ic_translate_24dp"
-                app:listItemTitle="@string/translations_title"
-                app:listItemSummary="@string/translations_summary"/>
 
             <com.simplified.wsstatussaver.views.ListItemView
                 android:id="@+id/issue_tracker"

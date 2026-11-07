@@ -1,12 +1,14 @@
 # Contributing
 
-## About the issue tracker
-First, I clarify that the [Issue Tracker](https://github.com/mardous/WhatSave/issues) is the preferred channel for bug reports and feature requests. I do this in order to keep everything centralized in one place, therefore, do not contact me by email for this purpose.
+Thanks for your interest in WhatStash! It is based on WhatSave by Christians Martínez A., and these guidelines are adapted from that project.
 
-Secondly, everyone is welcome to the discussion as long as the following guidelines are met:
+## About the issue tracker
+The [issue tracker](https://github.com/strider-ape/WhatStash/issues) is the place for bug reports and feature requests, so that everything stays in one place.
+
+Everyone is welcome to the discussion as long as the following guidelines are met:
 
 * Do not insult other users: avoid using offensive language when referring to others. You can review our [Code of Conduct](CODE_OF_CONDUCT.md) for more details on this.
-* Avoid unnecessary comments: don't make comments that contain only a "+1" or a 👍, use GitHub Reactions for that.
+* Avoid unnecessary comments: don't make comments that contain only a "+1" or a thumbs-up, use GitHub Reactions for that.
 * Don't open issues repeatedly just to try to get a response quickly. All issues will be addressed in due course by the devs or collaborators.
 
 ## Bug Reports

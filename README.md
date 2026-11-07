@@ -37,7 +37,7 @@ English
 
 ## Goals
 
-* **No ads, no tracking, no accounts**, and ultimately no `INTERNET` permission at all
+* **No ads, no tracking, no accounts**, and no `INTERNET` permission at all
 * **Open-source distribution only:** GitHub Releases, IzzyOnDroid and F-Droid (no Google Play)
 * **Sits next to WhatsApp** in your app drawer
 * Honest about what is possible: WhatsApp doesn't record who posted a status in the file, so no app can filter statuses by contact
@@ -74,10 +74,11 @@ No release yet. Once ready, WhatStash will be published on
 ```bash
 git clone https://github.com/strider-ape/WhatStash.git
 cd WhatStash
-./gradlew assembleFdroidDebug
+./gradlew assembleDebug
 ```
 
-No signing keys or Google services files are needed for debug builds.
+Requires JDK 21. No signing keys or Google services files are needed. Without a `keystore.properties`
+file, release builds are signed with the debug key.
 
 ## Contributing
 
@@ -87,8 +88,7 @@ for what is being worked on.
 ## Privacy
 
 WhatStash only reads the status files WhatsApp has already stored on your device, through a folder you
-grant access to. The analytics and update checker inherited from WhatSave are being removed; until that is
-done, see [PRIVACY](PRIVACY.md) for the original policy.
+grant access to. It has no internet permission, analytics or update checker. See [PRIVACY](PRIVACY.md).
 
 ## Credits
 
