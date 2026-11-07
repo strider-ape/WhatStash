@@ -10,7 +10,7 @@ English
 
 [![License](https://img.shields.io/github/license/strider-ape/WhatStash?color=blue&label=License)](LICENSE.md)
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg?logo=android)](https://github.com/strider-ape/WhatStash)
-[![Status](https://img.shields.io/badge/Status-Early%20development-orange.svg)](docs/PLAN.md)
+[![Release](https://img.shields.io/github/v/release/strider-ape/WhatStash?label=Release&logo=github)](https://github.com/strider-ape/WhatStash/releases/latest)
 [![Code of Conduct](https://img.shields.io/badge/Contributor_Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
 </div>
@@ -18,7 +18,7 @@ English
 > [!NOTE]
 > WhatStash is a continuation of **[WhatSave](#credits)** by Christians Martínez A., whose original
 > repository and F-Droid listing are no longer available. We are rebranding and modernizing it.
-> There is no release yet. See the [project plan](docs/PLAN.md) for where things stand.
+> Version 1.0.0 is out. See the [project plan](docs/PLAN.md) for what comes next.
 
 ## Screenshots
 
@@ -66,8 +66,14 @@ Planned for WhatStash ([details](docs/PLAN.md)):
 
 ## Download
 
-No release yet. Once ready, WhatStash will be published on
-[GitHub Releases](https://github.com/strider-ape/WhatStash/releases), then IzzyOnDroid and F-Droid.
+Download the latest APK from [GitHub Releases](https://github.com/strider-ape/WhatStash/releases/latest).
+IzzyOnDroid and F-Droid listings are planned.
+
+Release APKs are signed with this certificate (SHA-256), so you can check that an APK is genuine:
+
+```
+5F:EC:87:12:B5:49:AA:7B:14:7A:27:3D:41:A4:27:85:A0:5C:D9:50:1B:6E:29:50:22:5C:C0:16:B9:FC:9D:7A
+```
 
 ## Building
 

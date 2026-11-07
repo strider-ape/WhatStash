@@ -74,7 +74,7 @@ Done on 2026-11-07 unless marked open.
 5. **CI**
    - [x] `ci.yml`: wrapper validation, lint, debug and release builds on every push/PR to `main`
    - [x] `release.yml`: signed APK and GitHub release from a `v*` tag, keystore from repository secrets
-   - [ ] Add the signing secrets (`KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`) before the first release
+   - [x] Signing secrets added; v1.0.0 published on 2026-11-07, signed with the release key (SHA-256 `5F:EC:87:...:9D:7A`, full value in the README)
    - [ ] Unit tests (there are none yet)
 6. **Verification** (Motorola edge 30, Android 17, 2026-11-07)
    - [x] Debug and release builds install, launch and grant folder access through the system picker
@@ -110,7 +110,7 @@ Done on 2026-11-07 unless marked open.
 
 ## Phase 5: Distribution
 
-1. GitHub Releases (signed APK, changelog)
+1. [x] GitHub Releases: v1.0.0 published (signed APK)
 2. IzzyOnDroid repo (picks up GitHub releases)
 3. F-Droid main repo: metadata merge request, aim for reproducible builds
 4. Optional: own Weblate project for translations
