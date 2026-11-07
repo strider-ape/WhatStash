@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (C) 2023 Christians Martínez Alvarado
+  ~ Copyright (C) 2025 Christians Martínez Alvarado
   ~
   ~ Licensed under the GNU General Public License v3
   ~
@@ -35,36 +35,17 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <FrameLayout
-        	android:layout_width="match_parent"
-        	android:layout_height="match_parent"
-        	android:foreground="?selectableItemBackground">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:foreground="?selectableItemBackground">
 
-        	<ImageView
-        	    android:id="@+id/image"
-        	    android:layout_width="match_parent"
-        	    android:layout_height="match_parent"
-        	    android:scaleType="centerCrop"
-        	    tools:src="@tools:sample/avatars"
-        	    tools:ignore="ContentDescription"/>
-
-        	<View
-        	    android:layout_width="match_parent"
-        	    android:layout_height="match_parent"
-        	    android:background="@drawable/shadow_bottom"/>
-
-        	<com.google.android.material.textview.MaterialTextView
-            	android:id="@+id/preview_action"
-            	android:layout_width="match_parent"
-        	    android:layout_height="wrap_content"
-        	    android:layout_gravity="bottom|center"
-        	    android:padding="16dp"
-        	    android:gravity="center_vertical"
-        	    android:drawablePadding="16dp"
-        	    android:textAppearance="?textAppearanceBody2"
-        	    android:textColor="@color/md_white_1000"
-        	    app:drawableTint="@color/md_white_1000"
-        	    tools:drawableStart="@drawable/ic_round_play_arrow_24dp"
-        	    tools:text="@string/play_video_action"/>
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                tools:src="@tools:sample/avatars"
+                tools:ignore="ContentDescription"/>
 
         </FrameLayout>
 
@@ -74,27 +55,27 @@
         android:id="@+id/save_action"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-		android:layout_marginTop="16dp"
+        android:layout_marginTop="16dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:gravity="center_horizontal"
         android:background="?rectSelector"
-        android:drawableTop="@drawable/ic_save_24dp"
+        android:drawableTop="@drawable/ic_save_alt_24dp"
         android:drawablePadding="16dp"
-		app:drawableTint="?colorControlNormal"
+        app:drawableTint="?colorControlNormal"
         android:textColor="?android:textColorPrimary"
         android:text="@string/save_action"
         app:layout_constraintTop_toBottomOf="@+id/image_card"
-		app:layout_constraintStart_toStartOf="@+id/image_card"
-		app:layout_constraintEnd_toStartOf="@+id/share_action"/>
+        app:layout_constraintStart_toStartOf="@+id/image_card"
+        app:layout_constraintEnd_toStartOf="@+id/share_action"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/share_action"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-		android:layout_marginTop="16dp"
+        android:layout_marginTop="16dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:ellipsize="end"
@@ -103,18 +84,18 @@
         android:background="?rectSelector"
         android:drawableTop="@drawable/ic_share_24dp"
         android:drawablePadding="16dp"
-		app:drawableTint="?colorControlNormal"
+        app:drawableTint="?colorControlNormal"
         android:textColor="?android:textColorPrimary"
         android:text="@string/share_action"
         app:layout_constraintTop_toBottomOf="@+id/image_card"
-		app:layout_constraintStart_toEndOf="@+id/save_action"
-		app:layout_constraintEnd_toStartOf="@id/delete_action"/>
+        app:layout_constraintStart_toEndOf="@+id/save_action"
+        app:layout_constraintEnd_toStartOf="@id/delete_action"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/delete_action"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-		android:layout_marginTop="16dp"
+        android:layout_marginTop="16dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:ellipsize="end"
@@ -123,11 +104,11 @@
         android:background="?rectSelector"
         android:drawableTop="@drawable/ic_delete_24dp"
         android:drawablePadding="16dp"
-		app:drawableTint="?colorControlNormal"
+        app:drawableTint="?colorControlNormal"
         android:textColor="?android:textColorPrimary"
         android:text="@string/delete_action"
         app:layout_constraintTop_toBottomOf="@+id/image_card"
-		app:layout_constraintStart_toEndOf="@+id/share_action"
-		app:layout_constraintEnd_toEndOf="@+id/image_card"/>
+        app:layout_constraintStart_toEndOf="@+id/share_action"
+        app:layout_constraintEnd_toEndOf="@+id/image_card"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

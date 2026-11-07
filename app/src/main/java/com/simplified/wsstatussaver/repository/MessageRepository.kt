@@ -23,7 +23,8 @@ interface MessageRepository {
     fun listMessages(sender: String): LiveData<List<MessageEntity>>
     suspend fun insertMessage(message: MessageEntity): Long
     suspend fun removeMessage(message: MessageEntity)
-    suspend fun deleteConversation(sender: String)
+    suspend fun removeMessages(messages: List<MessageEntity>)
+    suspend fun deleteConversations(conversations: List<String>)
     suspend fun clearMessages()
 }
 
@@ -41,8 +42,15 @@ class MessageRepositoryImpl(private val messageDao: MessageDao) : MessageReposit
     override suspend fun removeMessage(message: MessageEntity) =
         messageDao.removeMessage(message)
 
-    override suspend fun deleteConversation(sender: String) =
-        messageDao.deleteConversation(sender)
+    override suspend fun removeMessages(messages: List<MessageEntity>) {
+        messageDao.removeMessages(messages)
+    }
+
+    override suspend fun deleteConversations(conversations: List<String>) {
+        if (conversations.isNotEmpty()) for (conversation in conversations) {
+            messageDao.deleteConversation(conversation)
+        }
+    }
 
     override suspend fun clearMessages() {
         messageDao.clearMessages()

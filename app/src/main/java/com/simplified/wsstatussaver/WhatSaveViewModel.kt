@@ -20,38 +20,51 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.content.getSystemService
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.simplified.wsstatussaver.database.Conversation
 import com.simplified.wsstatussaver.database.MessageEntity
 import com.simplified.wsstatussaver.extensions.blacklistMessageSender
 import com.simplified.wsstatussaver.extensions.getAllInstalledClients
 import com.simplified.wsstatussaver.extensions.lastUpdateId
 import com.simplified.wsstatussaver.extensions.preferences
-import com.simplified.wsstatussaver.model.*
+import com.simplified.wsstatussaver.model.Country
+import com.simplified.wsstatussaver.model.Status
+import com.simplified.wsstatussaver.model.StatusQueryResult
 import com.simplified.wsstatussaver.model.StatusQueryResult.ResultCode
+import com.simplified.wsstatussaver.model.StatusType
+import com.simplified.wsstatussaver.model.WaClient
+import com.simplified.wsstatussaver.model.WaDirectory
 import com.simplified.wsstatussaver.mvvm.DeletionResult
 import com.simplified.wsstatussaver.mvvm.SaveResult
+import com.simplified.wsstatussaver.mvvm.ShareResult
 import com.simplified.wsstatussaver.repository.Repository
 import com.simplified.wsstatussaver.storage.Storage
 import com.simplified.wsstatussaver.storage.StorageDevice
 import com.simplified.wsstatussaver.update.DEFAULT_REPO
 import com.simplified.wsstatussaver.update.DEFAULT_USER
 import com.simplified.wsstatussaver.update.GitHubRelease
-import com.simplified.wsstatussaver.update.UpdateService
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.EnumMap
 
 class WhatSaveViewModel(
     private val repository: Repository,
-    private val updateService: UpdateService,
+    private val httpClient: HttpClient,
     private val storage: Storage
 ) : ViewModel() {
 
     private val liveDataMap = newStatusesLiveDataMap()
-    private val savedLiveDataMap = newStatusesLiveDataMap()
 
+    private val savedStatuses = MutableLiveData(StatusQueryResult.Idle)
     private val installedClients = MutableLiveData<List<WaClient>>()
     private val storageDevices = MutableLiveData<List<StorageDevice>>()
     private val countries = MutableLiveData<List<Country>>()
@@ -62,7 +75,6 @@ class WhatSaveViewModel(
     override fun onCleared() {
         super.onCleared()
         liveDataMap.clear()
-        savedLiveDataMap.clear()
     }
 
     fun unlockMessageView() {
@@ -83,12 +95,10 @@ class WhatSaveViewModel(
 
     fun getSelectedCountry() = selectedCountry.value
 
+    fun getSavedStatuses(): LiveData<StatusQueryResult> = savedStatuses
+
     fun getStatuses(type: StatusType): LiveData<StatusQueryResult> {
         return liveDataMap.getOrCreateLiveData(type)
-    }
-
-    fun getSavedStatuses(type: StatusType): LiveData<StatusQueryResult> {
-        return savedLiveDataMap.getOrCreateLiveData(type)
     }
 
     fun loadClients() = viewModelScope.launch(IO) {
@@ -97,8 +107,7 @@ class WhatSaveViewModel(
     }
 
     fun loadStorageDevices() = viewModelScope.launch(IO) {
-        val result = storage.getStorageVolumes()
-        storageDevices.postValue(result)
+        storageDevices.postValue(storage.storageVolumes)
     }
 
     fun loadCountries() = viewModelScope.launch(IO) {
@@ -123,19 +132,30 @@ class WhatSaveViewModel(
         }
     }
 
-    fun loadSavedStatuses(type: StatusType) = viewModelScope.launch(IO) {
-        val liveData = savedLiveDataMap[type]
-        if (liveData != null) {
-            liveData.postValue(liveData.value?.copy(code = ResultCode.Loading) ?: StatusQueryResult(ResultCode.Loading))
-            liveData.postValue(repository.savedStatuses(type))
-        }
+    fun loadSavedStatuses() = viewModelScope.launch(IO) {
+        savedStatuses.postValue(savedStatuses.value?.copy(code = ResultCode.Loading) ?: StatusQueryResult(ResultCode.Loading))
+        savedStatuses.postValue(repository.savedStatuses())
     }
 
     fun reloadAll() {
         StatusType.entries.forEach {
             loadStatuses(it)
-            loadSavedStatuses(it)
         }
+        loadSavedStatuses()
+    }
+
+    fun statusIsSaved(status: Status): LiveData<Boolean> = repository.statusIsSaved(status)
+
+    fun shareStatus(status: Status): LiveData<ShareResult> = liveData(IO) {
+        emit(ShareResult(isLoading = true))
+        val data = repository.shareStatus(status)
+        emit(ShareResult(data = data))
+    }
+
+    fun shareStatuses(statuses: List<Status>): LiveData<ShareResult> = liveData(IO) {
+        emit(ShareResult(isLoading = true))
+        val data = repository.shareStatuses(statuses)
+        emit(ShareResult(data = data))
     }
 
     fun saveStatus(status: Status, saveName: String? = null): LiveData<SaveResult> = liveData(IO) {
@@ -164,6 +184,16 @@ class WhatSaveViewModel(
         emit(DeletionResult(statuses = statuses, deleted = result))
     }
 
+    fun removeStatus(status: Status) = viewModelScope.launch(IO) {
+        repository.removeStatus(status)
+        reloadAll()
+    }
+
+    fun removeStatuses(statuses: List<Status>) = viewModelScope.launch(IO) {
+        repository.removeStatuses(statuses)
+        reloadAll()
+    }
+
     fun messageSenders(): LiveData<List<Conversation>> =
         repository.listConversations()
 
@@ -174,11 +204,15 @@ class WhatSaveViewModel(
         repository.removeMessage(message)
     }
 
-    fun deleteConversation(sender: Conversation, addToBlacklist: Boolean = false) = viewModelScope.launch(IO) {
-        repository.deleteConversation(sender)
-        if (addToBlacklist) {
-            getApp().preferences().blacklistMessageSender(sender.name)
+    fun deleteConversations(conversations: List<Conversation>, addToBlacklist: Boolean = false) = viewModelScope.launch(IO) {
+        repository.deleteConversations(conversations)
+        if (addToBlacklist) conversations.forEach {
+            getApp().preferences().blacklistMessageSender(it.name)
         }
+    }
+
+    fun deleteMessages(messages: List<MessageEntity>) = viewModelScope.launch(IO) {
+        repository.removeMessages(messages)
     }
 
     fun deleteAllMessages() = viewModelScope.launch(IO) {
@@ -193,11 +227,21 @@ class WhatSaveViewModel(
         }
     }
 
-    fun getLatestUpdate(): LiveData<GitHubRelease> = liveData(IO + ioHandler) {
-        emit(updateService.latestRelease(DEFAULT_USER, DEFAULT_REPO))
+    fun getReadableDirectoryPaths(directories: List<WaDirectory>): LiveData<Array<String>> = liveData(IO) {
+        val paths = directories.map { it.createPrettyPath(storage) }
+            .toTypedArray()
+
+        emit(paths)
     }
 
-    fun downloadUpdate(context: Context, release: GitHubRelease) = viewModelScope.launch(IO + ioHandler) {
+    fun getLatestUpdate(): LiveData<GitHubRelease> = liveData(IO + SilentHandler) {
+        val result = httpClient.get("https://api.github.com/repos/$DEFAULT_USER/$DEFAULT_REPO/releases/latest")
+        if (result.status.isSuccess()) {
+            emit(result.body())
+        }
+    }
+
+    fun downloadUpdate(context: Context, release: GitHubRelease) = viewModelScope.launch(IO + SilentHandler) {
         val downloadRequest = release.getDownloadRequest(context)
         if (downloadRequest != null) {
             val downloadManager = context.getSystemService<DownloadManager>()
@@ -211,9 +255,7 @@ class WhatSaveViewModel(
         }
     }
 
-    private val ioHandler = CoroutineExceptionHandler { _, throwable ->
-        recordException(throwable)
-    }
+    private val SilentHandler = CoroutineExceptionHandler { _, _ -> }
 }
 
 internal typealias StatusesLiveData = MutableLiveData<StatusQueryResult>
@@ -221,12 +263,5 @@ internal typealias StatusesLiveDataMap = EnumMap<StatusType, StatusesLiveData>
 
 internal fun newStatusesLiveDataMap() = StatusesLiveDataMap(StatusType::class.java)
 
-internal fun StatusesLiveDataMap.getOrCreateLiveData(type: StatusType): StatusesLiveData {
-    var liveData = this[type]
-    if (liveData == null) {
-        liveData = StatusesLiveData(StatusQueryResult.Idle).also {
-            this[type] = it
-        }
-    }
-    return liveData
-}
+internal fun StatusesLiveDataMap.getOrCreateLiveData(type: StatusType): StatusesLiveData =
+    getOrPut(type) { StatusesLiveData(StatusQueryResult.Idle) }

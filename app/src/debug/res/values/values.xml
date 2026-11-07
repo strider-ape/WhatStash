@@ -15,6 +15,5 @@
 
 <resources>
     <!-- Launcher Icon -->
-    <color name="ic_launcher_background">@color/md_indigo_500</color>
     <bool name="allowBackup">false</bool>
 </resources>

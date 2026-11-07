@@ -17,27 +17,36 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.DocumentsContract
+import android.provider.DocumentsContract.Document
 import android.provider.MediaStore.MediaColumns
 import androidx.annotation.RequiresApi
-import androidx.core.net.toUri
-import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.LiveData
 import com.simplified.wsstatussaver.database.*
 import com.simplified.wsstatussaver.extensions.*
 import com.simplified.wsstatussaver.model.*
 import com.simplified.wsstatussaver.model.StatusQueryResult.ResultCode
-import com.simplified.wsstatussaver.recordException
 import com.simplified.wsstatussaver.storage.Storage
 import java.io.*
+import java.util.Date
 
 interface StatusesRepository {
+    suspend fun statusDirectories(clients: List<WaClient>): Set<WaDirectoryUri>
+    suspend fun statusDirectoriesAsFiles(client: WaClient): Set<File>
+    fun statusIsSaved(status: Status): LiveData<Boolean>
     suspend fun statuses(type: StatusType): StatusQueryResult
+    suspend fun savedStatuses(): StatusQueryResult
     suspend fun savedStatuses(type: StatusType): StatusQueryResult
     suspend fun savedStatusesObservable(type: StatusType): LiveData<List<StatusEntity>>
+    suspend fun removeFromDatabase(status: Status)
+    suspend fun removeFromDatabase(statuses: List<Status>)
+    suspend fun share(status: Status): ShareData
+    suspend fun share(statuses: List<Status>): ShareData
     suspend fun save(status: Status, saveName: String?): Uri?
     suspend fun save(statuses: List<Status>): Map<Status, Uri>
     suspend fun delete(status: Status): Boolean
@@ -52,63 +61,113 @@ class StatusesRepositoryImpl(
 
     private val contentResolver: ContentResolver = context.contentResolver
     private val preferences = context.preferences()
+    private val statusSaveLocation: SaveLocation
+        get() = preferences.saveLocation
     private val statusesLocationPath: String
         get() {
             val statusesLocation = storage.getStatusesLocation()
             return statusesLocation?.path ?: storage.externalStoragePath
         }
 
+    override suspend fun statusDirectories(clients: List<WaClient>): Set<WaDirectoryUri> {
+        val directories = mutableSetOf<WaDirectoryUri>()
+        val persistedPermissions = contentResolver.persistedUriPermissions
+        val readableDirectories = persistedPermissions.getReadableDirectories()
+        if (readableDirectories.isEmpty()) {
+            return directories
+        }
+        for (perm in persistedPermissions) {
+            if (!DocumentsContract.isTreeUri(perm.uri)) continue
+            val matchingDir = readableDirectories.firstOrNull { it.isThis(perm.uri) }
+            if (matchingDir != null) {
+                directories.addAll(matchingDir.getStatusesDirectories(context, clients, perm.uri))
+            }
+        }
+        return directories
+    }
+
+    override suspend fun statusDirectoriesAsFiles(client: WaClient): Set<File> {
+        val directories = mutableSetOf<File>()
+        val paths = WaDirectory.entries.filterNot { it.isLegacy }.mapNotNull { dir ->
+            if (dir.supportsClient(client)) {
+                val additionalSegments = dir.additionalSegments(client)
+                if (additionalSegments.isNotEmpty())
+                    "${dir.path}/${additionalSegments.joinToString("/")}"
+                else dir.path
+            } else {
+                null
+            }
+        }
+        for (path in paths) {
+            File(statusesLocationPath, "${path}/accounts")
+                .takeIf { it.isDirectory }?.let { baseDirectory ->
+                    baseDirectory.list { file, _ -> file.isDirectory }?.forEach { accountName ->
+                        directories.add(File(baseDirectory, "$accountName/Media/.Statuses"))
+                    }
+                }
+
+            directories.add(File(statusesLocationPath, "${path}/Media/.Statuses"))
+        }
+        return directories
+    }
+
+    override fun statusIsSaved(status: Status): LiveData<Boolean> =
+        statusDao.statusSavedObservable(status.fileUri, status.name)
+
     override suspend fun statuses(type: StatusType): StatusQueryResult {
         val statusList = arrayListOf<Status>()
-        val isExcludeOld = preferences.isExcludeOldStatuses()
         val isExcludeSaved = preferences.isExcludeSavedStatuses()
-        val installedClients = context.getAllInstalledClients()
+        val installedClients = context.getAllInstalledClients().getPreferred(context)
         if (installedClients.isEmpty()) {
             return StatusQueryResult(ResultCode.NotInstalled)
         }
-        if (hasQ()) {
-            val persistedPermissions = contentResolver.persistedUriPermissions
-            if (persistedPermissions.isEmpty()) {
-                return StatusQueryResult(code = ResultCode.PermissionError)
+        if (IsSAFRequired) {
+            val statusesDirectories = statusDirectories(installedClients)
+            if (statusesDirectories.isEmpty()) {
+                return StatusQueryResult(ResultCode.PermissionError)
             }
-            for (permission in persistedPermissions) {
-                var statusesDir = DocumentFile.fromTreeUri(context, permission.uri)
-                if (statusesDir?.name != ".Statuses") {
-                    statusesDir = statusesDir?.findFile(".Statuses")
-                }
-                if (statusesDir == null || !statusesDir.isDirectory) {
-                    continue
-                }
-                val statusFiles = statusesDir.listFiles()
-                if (statusFiles.isEmpty()) {
-                    continue
-                }
-                for (file in statusFiles) {
-                    val fileName = file.name ?: continue
-                    val client = WaClient.entries.firstOrNull {
-                        statusesDir.uri.path?.contains(it.getSAFDirectoryPath()) == true
-                    }
-                    if (type.acceptFileName(fileName)) {
-                        val isSaved = statusDao.statusSaved(file.uri, fileName)
-                        if ((file.isOldFile() && isExcludeOld) || (isSaved && isExcludeSaved))
-                            continue
+            val documentSelection = arrayOf(
+                Document.COLUMN_DOCUMENT_ID, //0
+                Document.COLUMN_DISPLAY_NAME, //1
+                Document.COLUMN_LAST_MODIFIED, //2
+                Document.COLUMN_SIZE //3
+            )
+            for (directory in statusesDirectories) {
+                contentResolver.query(directory.uri, documentSelection, null, null, null)?.use { cursor ->
+                    if (cursor.moveToFirst()) do {
+                        val id = cursor.getString(0)
+                        val fileName = cursor.getString(1)
+                        val lastModified = cursor.getLong(2)
+                        val size = cursor.getLong(3)
+                        val uri = DocumentsContract.buildChildDocumentsUriUsingTree(
+                            directory.uri, id
+                        )
+                        if (type.acceptFileName(fileName)) {
+                            val isOld = lastModified.hasElapsedTwentyFourHours()
+                            val isSaved = statusDao.statusSaved(uri, fileName)
+                            if (isOld || (isSaved && isExcludeSaved))
+                                continue
 
-                        statusList.add(Status(type, file.name, file.uri, file.lastModified(), file.length(), client?.packageName, isSaved))
-                    }
+                            statusList.add(Status(type, fileName, uri, lastModified, size, directory.client?.packageName, isSaved))
+                        }
+                    } while (cursor.moveToNext())
                 }
             }
         } else {
             if (context.hasStoragePermissions()) {
-                for (client in installedClients.getPreferred(context)) {
-                    val directory = File(statusesLocationPath, client.getDirectoryPath())
-                    val statuses = directory.listFiles { _, name -> type.acceptFileName(name) }
-                    if (!statuses.isNullOrEmpty()) for (file in statuses) {
-                        val fileUri = file.toUri()
-                        val isSaved = statusDao.statusSaved(fileUri, file.name)
-                        if ((file.isOldFile() && isExcludeOld) || (isSaved && isExcludeSaved))
-                            continue
+                for (client in installedClients) {
+                    for (directory in statusDirectoriesAsFiles(client)) {
+                        if (!directory.isDirectory) continue
+                        val statuses = directory.listFiles { _, name -> type.acceptFileName(name) }
+                        if (!statuses.isNullOrEmpty()) for (file in statuses) {
+                            val fileUri = file.getUri()
+                            val fileName = file.name
+                            val isSaved = statusDao.statusSaved(fileUri, file.name)
+                            if (fileName.isNullOrEmpty() || file.isOldFile() || (isSaved && isExcludeSaved))
+                                continue
 
-                        statusList.add(Status(type, file.name, fileUri, file.lastModified(), file.length(), client.packageName, isSaved))
+                            statusList.add(Status(type, fileName, fileUri, file.lastModified(), file.length(), client.packageName, isSaved))
+                        }
                     }
                 }
             }
@@ -119,44 +178,152 @@ class StatusesRepositoryImpl(
         return StatusQueryResult(ResultCode.NoStatuses)
     }
 
+    override suspend fun savedStatuses(): StatusQueryResult {
+        if (!context.hasStoragePermissions()) {
+            return StatusQueryResult(ResultCode.PermissionError)
+        }
+        val statuses = arrayListOf<SavedStatus>()
+        if (IsScopedStorageRequired) {
+            for (type in StatusType.entries) {
+                type.getSavedMedia(contentResolver).use { cursor ->
+                    if (cursor != null && cursor.moveToFirst()) do {
+                        statuses.add(cursor.getSavedStatus(type))
+                    } while (cursor.moveToNext())
+                }
+            }
+        } else {
+            val files = StatusType.entries.flatMap { type ->
+                SaveLocation.entries.flatMap { location ->
+                    type.getSavedContentFiles(location).toList()
+                }
+            }
+            if (files.isNotEmpty()) for (file in files) {
+                val type = file.getStatusType() ?: continue
+                statuses.add(
+                    SavedStatus(type, file.name, file.getUri(), file.lastModified(), file.length(), file.absolutePath)
+                )
+            }
+        }
+        if (statuses.isEmpty()) {
+            return StatusQueryResult(ResultCode.NoSavedStatuses)
+        }
+        return StatusQueryResult(ResultCode.Success, statuses.sortedByDescending { it.dateModified })
+    }
+
     override suspend fun savedStatuses(type: StatusType): StatusQueryResult {
         if (!context.hasStoragePermissions()) {
             return StatusQueryResult(ResultCode.PermissionError)
         }
         val statuses = arrayListOf<SavedStatus>()
-        if (hasQ()) {
-            val projection = arrayOf(
-                MediaColumns._ID,
-                MediaColumns.DISPLAY_NAME,
-                MediaColumns.DATE_MODIFIED,
-                MediaColumns.SIZE,
-                MediaColumns.RELATIVE_PATH
-            )
-            val selection = "${MediaColumns.RELATIVE_PATH} LIKE ?"
-            val arguments = arrayOf("%${type.relativePath}%")
-            contentResolver.query(type.contentUri, projection, selection, arguments, null).use { cursor ->
+        if (IsScopedStorageRequired) {
+            type.getSavedMedia(contentResolver).use { cursor ->
                 if (cursor != null && cursor.moveToFirst()) do {
-                    val mediaUri = ContentUris.withAppendedId(type.contentUri, cursor.getLong(0))
-                    val name = cursor.getString(1)
-                    val dateModified = cursor.getLong(2)
-                    val size = cursor.getLong(3)
-                    statuses.add(SavedStatus(type, name, mediaUri, dateModified * 1000, size, null))
+                    statuses.add(cursor.getSavedStatus(type))
                 } while (cursor.moveToNext())
             }
         } else {
-            val files = type.savesDirectory.listFiles { _, name -> type.acceptFileName(name) }
-            if (files != null) for (file in files) {
-                statuses.add(SavedStatus(type, file.name, file.toUri(), file.lastModified(), file.length(), file.absolutePath))
+            val files = SaveLocation.entries.flatMap {
+                type.getSavedContentFiles(it).toList()
+            }
+            if (files.isNotEmpty()) for (file in files) {
+                statuses.add(SavedStatus(type, file.name, file.getUri(), file.lastModified(), file.length(), file.absolutePath))
             }
         }
         if (statuses.isEmpty()) {
-            return StatusQueryResult(ResultCode.NoStatuses)
+            return StatusQueryResult(ResultCode.NoSavedStatuses)
         }
         return StatusQueryResult(ResultCode.Success, statuses.sortedByDescending { it.dateModified })
     }
 
     override suspend fun savedStatusesObservable(type: StatusType): LiveData<List<StatusEntity>> =
         statusDao.savedStatuses(type.ordinal)
+
+    override suspend fun removeFromDatabase(status: Status) {
+        statusDao.removeSave(status.name)
+    }
+
+    override suspend fun removeFromDatabase(statuses: List<Status>) {
+        statusDao.removeSaves(statuses.map { it.name }.toSet())
+    }
+
+    private fun Cursor.getSavedStatus(type: StatusType): SavedStatus {
+        val mediaUri = ContentUris.withAppendedId(type.contentUri, getLong(0))
+        val name = getString(1)
+        val dateModified = getLong(2)
+        val size = getLong(3)
+        return SavedStatus(type, name, mediaUri, dateModified * 1000, size, null)
+    }
+
+    override suspend fun share(status: Status): ShareData {
+        if (IsSAFRequired && status !is SavedStatus) {
+            val cacheDir = context.externalCacheDir
+            if (cacheDir == null || (!cacheDir.exists() && !cacheDir.mkdirs())) {
+                return ShareData(status.fileUri, status.type.mimeType)
+            }
+            val temp = File(cacheDir, status.type.getDefaultSaveName(Date().time, 0))
+            if (!temp.exists() || temp.delete()) {
+                try {
+                    val inputStream = contentResolver.openInputStream(status.fileUri)
+                    if (inputStream != null) {
+                        inputStream.use {
+                            temp.outputStream().use { outputStream ->
+                                it.copyTo(outputStream)
+                            }
+                        }
+                        return ShareData(temp.getUri(), status.type.mimeType)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            return ShareData.Empty
+        }
+        return ShareData(status.fileUri, status.type.mimeType)
+    }
+
+    override suspend fun share(statuses: List<Status>): ShareData {
+        if (IsSAFRequired) {
+            val data = hashMapOf<Uri, String>()
+            val savedStatuses = statuses.filterIsInstance<SavedStatus>().toSet()
+            val unsavedStatuses = statuses.subtract(savedStatuses)
+            for (status in savedStatuses) {
+                data[status.fileUri] = status.type.mimeType
+            }
+            if (unsavedStatuses.isEmpty()) {
+                return ShareData(data.keys, data.values.toSet())
+            }
+            val cacheDir = context.externalCacheDir
+            if (cacheDir != null && (cacheDir.exists() || cacheDir.mkdirs())) {
+                val currentTime = Date().time
+                for ((i, status) in unsavedStatuses.withIndex()) {
+                    val temp = File(cacheDir, status.type.getDefaultSaveName(currentTime, i + 1))
+                    if (!temp.exists() || temp.delete()) {
+                        try {
+                            val inputStream = contentResolver.openInputStream(status.fileUri)
+                            if (inputStream != null) {
+                                inputStream.use {
+                                    temp.outputStream().use { outputStream ->
+                                        it.copyTo(outputStream)
+                                    }
+                                }
+                                data[temp.getUri()] = status.type.mimeType
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+                return ShareData(data.keys, data.values.toSet())
+            }
+            return ShareData.Empty
+        } else {
+            val data = hashMapOf<Uri, String>()
+            for (status in statuses) {
+                data[status.fileUri] = status.type.mimeType
+            }
+            return ShareData(data.keys, data.values.toSet())
+        }
+    }
 
     override suspend fun save(status: Status, saveName: String?): Uri? {
         val savable = status.toStatusEntity(saveName)
@@ -211,7 +378,7 @@ class StatusesRepositoryImpl(
             return false
         }
         val success = when {
-            hasQ() -> contentResolver.delete(status.fileUri, null, null) > 0
+            IsScopedStorageRequired -> contentResolver.delete(status.fileUri, null, null) > 0
             status.hasFile() -> {
                 val file = status.getFile()
                 if (!file.exists() || file.delete()) {
@@ -223,39 +390,31 @@ class StatusesRepositoryImpl(
         }
         if (success) {
             if (autoNotify) contentResolver.notifyChange(status.type.contentUri, null)
-            if (!status.name.isNullOrEmpty()) statusDao.removeSave(status.name)
+            statusDao.removeSave(status.name)
         }
         return success
     }
 
     private fun saveAndGetUri(status: StatusEntity): Uri? {
-        return contentResolver.openInputStream(status.origin).use { stream ->
-            if (stream != null) {
-                val result = kotlin.runCatching {
-                    saveStatus(status, stream).also { saveUri ->
-                        if (saveUri != null) {
-                            statusDao.saveStatus(status)
-                        }
+        val result = runCatching {
+            contentResolver.openInputStream(status.origin)?.use { stream ->
+                saveStatus(status, stream).also { saveUri ->
+                    if (saveUri != null) {
+                        statusDao.saveStatus(status)
                     }
                 }
-
-                if (result.isSuccess) {
-                    result.getOrThrow()
-                } else {
-                    result.exceptionOrNull()?.let { recordException(it) }
-                    null
-                }
-            } else null
+            }
         }
+        return result.getOrNull()
     }
 
     @Throws(IOException::class)
     private fun saveStatus(status: StatusEntity, inputStream: InputStream): Uri? {
-        if (hasQ()) {
+        if (IsScopedStorageRequired) {
             return saveQ(status, inputStream)
         }
         if (Environment.MEDIA_MOUNTED == Environment.getExternalStorageState()) {
-            val destDirectory = status.type.savesDirectory
+            val destDirectory = status.type.getSavesDirectory(statusSaveLocation)
             if (destDirectory.isDirectory || destDirectory.mkdirs()) {
                 val statusSaveFile = File(destDirectory, status.saveName)
                 if (!statusSaveFile.exists() && statusSaveFile.createNewFile()) {
@@ -275,7 +434,7 @@ class StatusesRepositoryImpl(
 
         val values = ContentValues().apply {
             put(MediaColumns.DISPLAY_NAME, status.saveName)
-            put(MediaColumns.RELATIVE_PATH, status.type.relativePath)
+            put(MediaColumns.RELATIVE_PATH, status.type.getRelativePath(statusSaveLocation))
             put(MediaColumns.MIME_TYPE, status.type.mimeType)
         }
 
@@ -303,8 +462,8 @@ class StatusesRepositoryImpl(
     }
 
     private fun scanSavedStatuses(statusType: StatusType) {
-        if (!hasQ()) {
-            val files = statusType.savesDirectory.listFiles { _, name -> name.endsWith(statusType.format) }
+        if (!IsScopedStorageRequired) {
+            val files = statusType.getSavesDirectory(statusSaveLocation).listFiles { _, name -> name.endsWith(statusType.format) }
                 ?.map { it.absolutePath }
                 ?.toTypedArray()
             if (!files.isNullOrEmpty()) {

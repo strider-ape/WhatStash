@@ -27,22 +27,33 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialFadeThrough
 import com.simplified.wsstatussaver.R
 import com.simplified.wsstatussaver.WhatSaveViewModel
-import com.simplified.wsstatussaver.adapter.ClientAdapter
+import com.simplified.wsstatussaver.databinding.DialogSafTutorialBinding
 import com.simplified.wsstatussaver.databinding.FragmentOnboardBinding
-import com.simplified.wsstatussaver.dialogs.PrivacyDialog
-import com.simplified.wsstatussaver.extensions.*
+import com.simplified.wsstatussaver.extensions.IsSAFRequired
+import com.simplified.wsstatussaver.extensions.Space
+import com.simplified.wsstatussaver.extensions.applyWindowInsets
+import com.simplified.wsstatussaver.extensions.directoryAccessRequestIntent
+import com.simplified.wsstatussaver.extensions.formattedAsHtml
+import com.simplified.wsstatussaver.extensions.getOnBackPressedDispatcher
+import com.simplified.wsstatussaver.extensions.getReadableDirectories
+import com.simplified.wsstatussaver.extensions.hasPermissions
+import com.simplified.wsstatussaver.extensions.hasSAFPermissions
+import com.simplified.wsstatussaver.extensions.hasStoragePermissions
+import com.simplified.wsstatussaver.extensions.releasePermissions
+import com.simplified.wsstatussaver.extensions.requestWithoutOnboard
+import com.simplified.wsstatussaver.extensions.showToast
+import com.simplified.wsstatussaver.extensions.takePermissions
 import com.simplified.wsstatussaver.fragments.base.BaseFragment
-import com.simplified.wsstatussaver.interfaces.IClientCallback
+import com.simplified.wsstatussaver.fragments.binding.OnboardBinding
 import com.simplified.wsstatussaver.interfaces.IPermissionChangeListener
-import com.simplified.wsstatussaver.model.WaClient
+import com.simplified.wsstatussaver.model.WaDirectory
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
-class OnboardFragment : BaseFragment(R.layout.fragment_onboard), View.OnClickListener, IClientCallback,
+class OnboardFragment : BaseFragment(R.layout.fragment_onboard), View.OnClickListener,
     IPermissionChangeListener {
 
     private val args by navArgs<OnboardFragmentArgs>()
@@ -52,15 +63,14 @@ class OnboardFragment : BaseFragment(R.layout.fragment_onboard), View.OnClickLis
     private val viewModel: WhatSaveViewModel by activityViewModel()
 
     private lateinit var permissionRequest: ActivityResultLauncher<Intent>
-    private var clientAdapter: ClientAdapter? = null
-    private var selectedClient: WaClient? = null
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         permissionRequest = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult? ->
-            if (result != null && selectedClient?.takePermissions(requireContext(), result) == true) {
-                clientAdapter?.notifyDataSetChanged()
+            if (result != null && takePermissions(result)) {
+                viewModel.reloadAll()
+                updateButtons()
             }
         }
     }
@@ -68,6 +78,9 @@ class OnboardFragment : BaseFragment(R.layout.fragment_onboard), View.OnClickLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = OnboardBinding(FragmentOnboardBinding.bind(view))
+        binding.nestedScrollView.applyWindowInsets(top = true, bottom = true, left = true, right = true)
+        binding.continueButton.applyWindowInsets(bottom = true, right = true, addedSpace = Space.viewMargin())
+
         postponeEnterTransition()
         enterTransition = MaterialFadeThrough().addTarget(view)
         reenterTransition = MaterialFadeThrough().addTarget(view)
@@ -75,14 +88,9 @@ class OnboardFragment : BaseFragment(R.layout.fragment_onboard), View.OnClickLis
 
         binding.grantStorageButton.setOnClickListener(this)
         binding.continueButton.setOnClickListener(this)
-        binding.privacyPolicyButton.setOnClickListener(this)
         setupViews()
-        setupClientPermissions()
-        setupGrantButtonIcon()
-
-        viewModel.getInstalledClients().observe(viewLifecycleOwner) {
-            clientAdapter?.setClients(it)
-        }
+        setupGrantButton()
+        setupDirectoryAccess()
 
         statusesActivity.addPermissionsChangeListener(this)
         getOnBackPressedDispatcher().addCallback(viewLifecycleOwner, onBackPressedCallback)
@@ -91,60 +99,91 @@ class OnboardFragment : BaseFragment(R.layout.fragment_onboard), View.OnClickLis
     private fun setupViews() {
         if (args.isFromSettings) {
             binding.subtitle.isVisible = false
-            binding.agreementText.isVisible = false
-            binding.storagePermissionView.isGone = hasStoragePermissions()
         }
     }
 
-    private fun setupGrantButtonIcon() {
-        val iconRes = if (hasStoragePermissions()) R.drawable.ic_round_check_24dp else R.drawable.ic_storage_24dp
-        binding.grantStorageButton.setIconResource(iconRes)
-    }
-
-    private fun setupClientPermissions() {
-        if (hasQ()) {
-            clientAdapter = ClientAdapter(requireContext(), this)
-            binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            binding.recyclerView.adapter = clientAdapter
+    private fun setupGrantButton(hasPermissions: Boolean = hasStoragePermissions()) {
+        if (hasPermissions) {
+            binding.grantStorageButton.setIconResource(R.drawable.ic_round_check_24dp)
+            binding.grantStorageButton.setText(R.string.permission_granted)
         } else {
-            binding.clientPermissionView.isVisible = false
+            binding.grantStorageButton.icon = null
+            binding.grantStorageButton.setText(R.string.grant_permissions)
         }
+        binding.grantStorageButton.isEnabled = !hasPermissions
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    override fun clientClick(client: WaClient) {
-        if (client.hasPermissions(requireContext())) {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.revoke_permissions_title)
-                .setMessage(
-                    getString(
-                        R.string.revoke_permissions_message,
-                        client.getLabel(requireContext())
-                    ).formattedAsHtml()
-                )
-                .setPositiveButton(R.string.revoke_action) { _: DialogInterface, _: Int ->
-                    if (client.releasePermissions(requireContext())) {
-                        showToast(R.string.permissions_revoked_successfully)
-                        clientAdapter?.notifyDataSetChanged()
-                    }
+    private fun setupDirectoryAccess() {
+        if (!IsSAFRequired) {
+            binding.directoryPermissionView.isGone = true
+        } else {
+            updateButtons()
+            binding.listDirectoriesButton.setOnClickListener {
+                val directories = getReadableDirectories()
+                viewModel.getReadableDirectoryPaths(directories).observe(viewLifecycleOwner) {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.accessible_directories)
+                        .setItems(it) { _: DialogInterface, position: Int ->
+                            val selectedDir = directories[position]
+                            MaterialAlertDialogBuilder(requireContext())
+                                .setTitle(R.string.revoke_permissions_title)
+                                .setMessage(R.string.revoke_directory_access_message)
+                                .setPositiveButton(R.string.revoke_action) { _: DialogInterface, _: Int ->
+                                    if (selectedDir.releasePermissions(requireContext())) {
+                                        showToast(R.string.permissions_revoked_successfully)
+                                        if (getReadableDirectories().isEmpty()) {
+                                            updateButtons()
+                                        }
+                                    }
+                                }
+                                .setNegativeButton(android.R.string.cancel, null)
+                                .show()
+                        }
+                        .setPositiveButton(R.string.close_action, null)
+                        .show()
                 }
-                .setNegativeButton(android.R.string.cancel, null)
-                .show()
-        } else if (hasQ()) { // Just to remove the Lint warning
-            this.selectedClient = client
-            permissionRequest.launch(requireContext().getClientSAFIntent(client))
+            }
+            binding.revokeDirectoryAccessButton.setOnClickListener {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.revoke_permissions_title)
+                    .setMessage(R.string.revoke_all_directories_access_message)
+                    .setPositiveButton(R.string.revoke_action) { _: DialogInterface, _: Int ->
+                        if (releasePermissions()) {
+                            showToast(R.string.permissions_revoked_successfully)
+                            updateButtons()
+                        }
+                    }
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show()
+            }
+            binding.grantDirectoryAccessButton.setOnClickListener {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.how_to_title)
+                    .setView(
+                        DialogSafTutorialBinding.inflate(layoutInflater).also {
+                            it.textView.text = getString(R.string.saf_tutorial_1, WaDirectory.Media.path).formattedAsHtml()
+                        }.root
+                    )
+                    .setPositiveButton(R.string.got_it_action) { _: DialogInterface, _: Int ->
+                        permissionRequest.launch(directoryAccessRequestIntent())
+                    }
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show()
+            }
         }
     }
 
-    override fun checkModeForClient(client: WaClient): Int {
-        if (client.hasPermissions(requireContext())) {
-            return IClientCallback.MODE_CHECKED
-        }
-        return IClientCallback.MODE_UNCHECKABLE
+    private fun updateButtons() {
+        val hasSAFPermissions = hasSAFPermissions()
+        binding.listDirectoriesButton.isVisible = hasSAFPermissions
+        binding.revokeDirectoryAccessButton.isVisible = hasSAFPermissions
     }
 
-    override fun permissionsStateChanged() {
-        setupGrantButtonIcon()
+    override fun permissionsStateChanged(hasPermissions: Boolean) {
+        setupGrantButton(hasPermissions)
+        if (hasPermissions) {
+            viewModel.reloadAll()
+        }
     }
 
     override fun onClick(view: View) {
@@ -155,7 +194,6 @@ class OnboardFragment : BaseFragment(R.layout.fragment_onboard), View.OnClickLis
                 }
             }
 
-            binding.privacyPolicyButton -> PrivacyDialog().show(childFragmentManager, "PRIVACY_POLICY")
             binding.continueButton -> {
                 getOnBackPressedDispatcher().onBackPressed()
             }
@@ -174,17 +212,26 @@ class OnboardFragment : BaseFragment(R.layout.fragment_onboard), View.OnClickLis
     }
 
     private fun handleBackPress(): Boolean {
+        // WORKAROUND: Sometimes the callback is executed even when the fragment has already
+        // been removed, which is why some users got IllegalStateException errors.
+        // For now, we only have to manually check the state of the fragment and cancel the
+        // callback by returning 'true' when it is not visible.
+        if (!isVisible) return true
         if (!hasPermissions()) {
             MaterialAlertDialogBuilder(requireContext())
                 .setMessage(R.string.permissions_denied_message)
                 .setPositiveButton(R.string.continue_action) { _: DialogInterface, _: Int ->
-                    findNavController().popBackStack()
+                    closeOnboard()
                 }
                 .setNegativeButton(R.string.grant_permissions, null)
                 .show()
             return true
         }
         return false
+    }
+
+    private fun closeOnboard() {
+        if (isVisible) findNavController().popBackStack()
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {

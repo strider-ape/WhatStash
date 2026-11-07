@@ -16,10 +16,10 @@ package com.simplified.wsstatussaver.fragments.message
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.telephony.PhoneNumberFormattingTextWatcher
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.findNavController
@@ -31,13 +31,16 @@ import com.simplified.wsstatussaver.WhatSaveViewModel
 import com.simplified.wsstatussaver.adapter.CountryAdapter
 import com.simplified.wsstatussaver.databinding.DialogRecyclerviewBinding
 import com.simplified.wsstatussaver.databinding.FragmentMessageANumberBinding
+import com.simplified.wsstatussaver.extensions.applyBottomWindowInsets
 import com.simplified.wsstatussaver.extensions.encodedUrl
 import com.simplified.wsstatussaver.extensions.getPreferredClient
 import com.simplified.wsstatussaver.extensions.showToast
 import com.simplified.wsstatussaver.extensions.startActivitySafe
 import com.simplified.wsstatussaver.fragments.base.BaseFragment
+import com.simplified.wsstatussaver.fragments.binding.MessageBinding
 import com.simplified.wsstatussaver.interfaces.ICountryCallback
 import com.simplified.wsstatussaver.model.Country
+import com.simplified.wsstatussaver.views.PhoneNumberFormattingTextWatcher
 import io.michaelrocks.libphonenumber.android.NumberParseException
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import org.koin.android.ext.android.inject
@@ -58,6 +61,7 @@ class MessageFragment : BaseFragment(R.layout.fragment_message_a_number), ICount
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = MessageBinding(FragmentMessageANumberBinding.bind(view))
+        binding.scrollView.applyBottomWindowInsets()
         postponeEnterTransition()
         enterTransition = MaterialFadeThrough().addTarget(view)
         reenterTransition = MaterialFadeThrough().addTarget(view)
@@ -67,6 +71,9 @@ class MessageFragment : BaseFragment(R.layout.fragment_message_a_number), ICount
         statusesActivity.setSupportActionBar(binding.toolbar)
         binding.phoneInputLayout.setEndIconOnClickListener {
             countriesDialog?.show()
+        }
+        binding.shareButton.setOnClickListener {
+            shareLink()
         }
         binding.sendButton.setOnClickListener {
             sendMessage()
@@ -103,7 +110,6 @@ class MessageFragment : BaseFragment(R.layout.fragment_message_a_number), ICount
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         super.onCreateMenu(menu, menuInflater)
         menu.removeItem(R.id.action_settings)
-        menu.removeItem(R.id.action_about)
     }
 
     override fun countryClick(country: Country) {
@@ -116,7 +122,31 @@ class MessageFragment : BaseFragment(R.layout.fragment_message_a_number), ICount
         _binding = null
     }
 
+    private fun shareLink() {
+        createApiRequest { result ->
+            ShareCompat.IntentBuilder(requireContext())
+                .setChooserTitle(R.string.share_link_action)
+                .setText(result)
+                .setType("text/plain")
+                .startChooser()
+        }
+    }
+
     private fun sendMessage() {
+        createApiRequest { result ->
+            val intent = Intent(Intent.ACTION_VIEW, result.toUri())
+            val whatsappClient = requireContext().getPreferredClient()
+            if (whatsappClient != null) {
+                intent.setPackage(whatsappClient.packageName)
+            }
+            startActivitySafe(intent) { _: Throwable, activityNotFound: Boolean ->
+                if (activityNotFound) showToast(R.string.wa_is_not_installed_title)
+            }
+            findNavController().popBackStack()
+        }
+    }
+
+    private fun createApiRequest(onComplete: (String) -> Unit) {
         val entered = binding.phoneNumber.text?.toString()
         val country = viewModel.getSelectedCountry() ?: return
         val formattedNumber = formatInput(entered, country)
@@ -130,15 +160,7 @@ class MessageFragment : BaseFragment(R.layout.fragment_message_a_number), ICount
         if (!encodedMessage.isNullOrBlank()) {
             apiRequest.append("&text=").append(encodedMessage)
         }
-        val intent = Intent(Intent.ACTION_VIEW, apiRequest.toString().toUri())
-        val whatsappClient = requireContext().getPreferredClient()
-        if (whatsappClient != null) {
-            intent.setPackage(whatsappClient.packageName)
-        }
-        startActivitySafe(intent) { _: Throwable, activityNotFound: Boolean ->
-            if (activityNotFound) showToast(R.string.wa_is_not_installed_title)
-        }
-        findNavController().popBackStack()
+        onComplete(apiRequest.toString())
     }
 
     private fun formatInput(input: String?, country: Country): String? {

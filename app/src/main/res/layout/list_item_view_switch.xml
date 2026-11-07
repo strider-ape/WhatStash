@@ -36,7 +36,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="?attr/colorControlNormal"
-        tools:srcCompat="@drawable/ic_whatsapp_24dp"/>
+        tools:srcCompat="@drawable/ic_open_in_new_24dp"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@android:id/title"
@@ -44,6 +44,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="0dp"
         android:paddingEnd="16dp"
+        android:textAlignment="viewStart"
         android:textAppearance="?textAppearanceSubtitle1"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@+id/switchWidget"
@@ -59,6 +60,7 @@
         android:layout_marginTop="2dp"
         android:paddingStart="0dp"
         android:paddingEnd="16dp"
+        android:textAlignment="viewStart"
         android:textAppearance="?textAppearanceBody2"
         android:textColor="?android:attr/textColorSecondary"
         app:layout_constrainedWidth="true"

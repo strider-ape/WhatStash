@@ -24,18 +24,29 @@ import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import androidx.recyclerview.widget.RecyclerView.OVER_SCROLL_NEVER
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialFadeThrough
+import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager
+import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplified.wsstatussaver.R
 import com.simplified.wsstatussaver.WhatSaveViewModel
 import com.simplified.wsstatussaver.adapter.ConversationAdapter
 import com.simplified.wsstatussaver.database.Conversation
-import com.simplified.wsstatussaver.databinding.DialogDeleteConversationBinding
 import com.simplified.wsstatussaver.databinding.FragmentConversationsBinding
 import com.simplified.wsstatussaver.dialogs.BlacklistedSenderDialog
-import com.simplified.wsstatussaver.extensions.*
+import com.simplified.wsstatussaver.dialogs.DeleteConversationDialog
+import com.simplified.wsstatussaver.extensions.applyBottomWindowInsets
+import com.simplified.wsstatussaver.extensions.bindNotificationListener
+import com.simplified.wsstatussaver.extensions.getIntRes
+import com.simplified.wsstatussaver.extensions.isMessageViewEnabled
+import com.simplified.wsstatussaver.extensions.isNotificationListener
+import com.simplified.wsstatussaver.extensions.isNullOrEmpty
+import com.simplified.wsstatussaver.extensions.preferences
+import com.simplified.wsstatussaver.extensions.requestContext
 import com.simplified.wsstatussaver.fragments.base.BaseFragment
 import com.simplified.wsstatussaver.fragments.binding.ConversationsBinding
 import com.simplified.wsstatussaver.interfaces.IConversationCallback
@@ -50,6 +61,8 @@ class ConversationListFragment : BaseFragment(R.layout.fragment_conversations), 
     private val binding get() = _binding!!
 
     private var adapter: ConversationAdapter? = null
+    private var swipeManager: RecyclerViewSwipeManager? = null
+    private var wrappedAdapter: RecyclerView.Adapter<*>? = null
     private var blockSwitchListener: Boolean = false
 
     private var isMessageViewEnabled: Boolean
@@ -62,6 +75,7 @@ class ConversationListFragment : BaseFragment(R.layout.fragment_conversations), 
         super.onViewCreated(view, savedInstanceState)
         val viewBinding = FragmentConversationsBinding.bind(view)
         _binding = ConversationsBinding(viewBinding)
+        binding.scrollView.applyBottomWindowInsets()
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
         enterTransition = MaterialFadeThrough().addTarget(view)
@@ -78,6 +92,7 @@ class ConversationListFragment : BaseFragment(R.layout.fragment_conversations), 
 
         viewModel.messageSenders().observe(viewLifecycleOwner) {
             adapter?.data(it)
+            updateEmptyView()
         }
     }
 
@@ -93,7 +108,6 @@ class ConversationListFragment : BaseFragment(R.layout.fragment_conversations), 
     private val adapterDataObserver = object : AdapterDataObserver() {
         override fun onChanged() {
             if (adapter.isNullOrEmpty()) {
-                updateEmptyView()
                 binding.emptyView.isVisible = true
                 binding.recyclerView.overScrollMode = OVER_SCROLL_NEVER
             } else {
@@ -104,33 +118,33 @@ class ConversationListFragment : BaseFragment(R.layout.fragment_conversations), 
     }
 
     private fun setupSwitch() {
-        binding.switchWithContainer.isChecked = preferences().isMessageViewEnabled
+        binding.switchWithContainer.isChecked = isMessageViewEnabled
         binding.switchWithContainer.setOnCheckedChangeListener(this)
     }
 
     private fun setupRecyclerView() {
+        swipeManager = RecyclerViewSwipeManager().also {
+            wrappedAdapter = it.createWrappedAdapter(adapter!!)
+        }
         binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext()).apply {
             recycleChildrenOnDetach = true
         }
-        binding.recyclerView.adapter = adapter
+        binding.recyclerView.adapter = wrappedAdapter
+        binding.recyclerView.itemAnimator = RefactoredDefaultItemAnimator()
+        swipeManager!!.attachRecyclerView(binding.recyclerView)
     }
 
     private fun updateEmptyView() {
-        if (isMessageViewEnabled) {
-            binding.emptyTitle.setText(R.string.empty)
-            binding.emptyText.setText(R.string.no_conversations)
-        } else {
-            binding.emptyTitle.setText(R.string.message_view_is_disabled)
-            binding.emptyText.setText(R.string.you_wont_be_able_to_see_messages_here)
-        }
+        binding.emptyTitle.setText(R.string.empty)
+        binding.emptyText.setText(R.string.no_conversations)
+        binding.progressIndicator.hide()
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         super.onCreateMenu(menu, menuInflater)
         menuInflater.inflate(R.menu.menu_conversations, menu)
         menu.removeItem(R.id.action_settings)
-        menu.removeItem(R.id.action_about)
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -160,7 +174,6 @@ class ConversationListFragment : BaseFragment(R.layout.fragment_conversations), 
                 .setMessage(R.string.disable_message_view_confirmation)
                 .setPositiveButton(R.string.yes_action) { _: DialogInterface, _: Int ->
                     isMessageViewEnabled = false
-                    updateEmptyView()
                     viewModel.deleteAllMessages()
                 }
                 .setNegativeButton(R.string.no_action) { _: DialogInterface, _: Int ->
@@ -172,7 +185,6 @@ class ConversationListFragment : BaseFragment(R.layout.fragment_conversations), 
                 .show()
         } else {
             isMessageViewEnabled = true
-            updateEmptyView()
             requestContext {
                 if (!it.bindNotificationListener()) {
                     setStateManually(buttonView, false)
@@ -194,22 +206,34 @@ class ConversationListFragment : BaseFragment(R.layout.fragment_conversations), 
         findNavController().navigate(R.id.messagesFragment, arguments)
     }
 
-    override fun conversationLongClick(conversation: Conversation) {
-        val binding = DialogDeleteConversationBinding.inflate(layoutInflater)
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.delete_conversation_title)
-            .setView(binding.root)
-            .setPositiveButton(R.string.delete_action) { _: DialogInterface, _: Int ->
-                viewModel.deleteConversation(conversation, addToBlacklist = binding.blacklistSender.isChecked)
+    override fun conversationSwiped(conversation: Conversation) {
+        DeleteConversationDialog.create(conversation)
+            .show(childFragmentManager, "DELETE_CONVERSATION")
+    }
+
+    override fun conversationMultiSelectionClick(item: MenuItem, selection: List<Conversation>) {
+        when (item.itemId) {
+            R.id.action_delete -> {
+                DeleteConversationDialog.create(selection)
+                    .show(childFragmentManager, "DELETE_CONVERSATION")
             }
-            .setNegativeButton(android.R.string.cancel, null)
-            .show()
+        }
+    }
+
+    override fun onPause() {
+        swipeManager?.cancelSwipe()
+        super.onPause()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.recyclerView.itemAnimator = null
         binding.recyclerView.layoutManager = null
         adapter?.unregisterAdapterDataObserver(adapterDataObserver)
+        swipeManager?.release()
+        swipeManager = null
+        WrapperAdapterUtils.releaseAll(wrappedAdapter)
+        wrappedAdapter = null
         adapter = null
     }
 }

@@ -20,17 +20,25 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.simplified.wsstatussaver.R
+import com.simplified.wsstatussaver.getApp
+import com.simplified.wsstatussaver.model.PlaybackSpeed
+import com.simplified.wsstatussaver.model.SaveLocation
+
+private fun appStr(resId: Int) = getApp().applicationContext.getString(resId)
 
 fun Context.preferences(): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
 fun Fragment.preferences() = requireContext().preferences()
 
-fun SharedPreferences.getDefaultDayNightMode() = getDefaultDayNightMode(getString(PREFERENCE_NIGHT_MODE, null))
+fun SharedPreferences.useCustomFont() = getBoolean(PREFERENCE_USE_CUSTOM_FONT, true)
+
+fun SharedPreferences.getDefaultDayNightMode() = getDefaultDayNightMode(getString(PREFERENCE_THEME_MODE, null))
 
 fun getDefaultDayNightMode(nightMode: String?): Int {
     if (nightMode != null) when (nightMode) {
-        NightMode.VALUE_YES -> return AppCompatDelegate.MODE_NIGHT_YES
-        NightMode.VALUE_NO -> return AppCompatDelegate.MODE_NIGHT_NO
+        NightMode.VALUE_DARK -> return AppCompatDelegate.MODE_NIGHT_YES
+        NightMode.VALUE_LIGHT -> return AppCompatDelegate.MODE_NIGHT_NO
     }
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
@@ -75,17 +83,13 @@ var SharedPreferences.isMessageViewEnabled
         putBoolean(PREFERENCE_ENABLE_MESSAGE_VIEW, value)
     }
 
-fun SharedPreferences.isExcludeOldStatuses() = getBoolean(PREFERENCE_EXCLUDE_OLD_STATUSES, false)
-
 fun SharedPreferences.isExcludeSavedStatuses() = getBoolean(PREFERENCE_EXCLUDE_SAVED_STATUSES, false)
-
-fun SharedPreferences.getLongPressAction() = getString(PREFERENCE_LONG_PRESS_ACTION, LongPressAction.VALUE_MULTI_SELECTION)!!
 
 fun SharedPreferences.isWhatsappIcon() = getBoolean(PREFERENCE_WHATSAPP_ICON, false)
 
 fun SharedPreferences.isQuickDeletion() = getBoolean(PREFERENCE_QUICK_DELETION, false)
 
-fun SharedPreferences.getUpdateSearchMode() = getString(PREFERENCE_UPDATE_SEARCH_MODE, UpdateSearchMode.WEEKLY)
+fun SharedPreferences.getUpdateSearchMode() = getString(PREFERENCE_UPDATE_SEARCH_MODE, appStr(R.string.auto_update_policy))
 
 fun SharedPreferences.isUpdateOnlyWifi() = getBoolean(PREFERENCE_UPDATE_ONLY_WIFI, false)
 
@@ -115,20 +119,41 @@ var SharedPreferences.defaultClientPackageName: String?
         putString(PREFERENCE_DEFAULT_CLIENT, packageName)
     }
 
-class NightMode {
-    companion object {
-        const val VALUE_YES = "yes"
-        const val VALUE_NO = "no"
+var SharedPreferences.saveLocation
+    get() = getString(PREFERENCE_SAVE_LOCATION, null)?.toEnum<SaveLocation>() ?: SaveLocation.DCIM
+    set(value) = edit { putString(PREFERENCE_SAVE_LOCATION, value.name) }
+
+var SharedPreferences.playbackSpeed
+    get() = getString(PREFERENCE_PLAYBACK_SPEED, null)?.toEnum<PlaybackSpeed>() ?: PlaybackSpeed.Normal
+    set(value) = edit { putString(PREFERENCE_PLAYBACK_SPEED, value.name) }
+
+fun SharedPreferences.bumpPlaybackSpeed(): PlaybackSpeed {
+    return playbackSpeed.next().also { playbackSpeed = it }
+}
+
+fun SharedPreferences.resetPlaybackSpeed(): PlaybackSpeed {
+    return PlaybackSpeed.Normal.also { playbackSpeed = it }
+}
+
+fun SharedPreferences.migratePreferences() {
+    if (contains("night_mode")) {
+        val oldValue = getString("night_mode", null)
+        edit {
+            val newValue = when (oldValue) {
+                "yes" -> NightMode.VALUE_DARK
+                "no" -> NightMode.VALUE_LIGHT
+                else -> null
+            }
+            putString(PREFERENCE_THEME_MODE, newValue)
+            remove("night_mode")
+        }
     }
 }
 
-class LongPressAction {
+class NightMode {
     companion object {
-        const val VALUE_MULTI_SELECTION = "multi-selection"
-        const val VALUE_PREVIEW = "preview"
-        const val VALUE_SAVE = "save"
-        const val VALUE_SHARE = "share"
-        const val VALUE_DELETE = "delete"
+        const val VALUE_DARK = "dark"
+        const val VALUE_LIGHT = "light"
     }
 }
 
@@ -143,14 +168,14 @@ class UpdateSearchMode {
 }
 
 const val SHOULD_SHOW_ONBOARD = "should_show_onboard"
-const val PREFERENCE_NIGHT_MODE = "night_mode"
+const val PREFERENCE_USE_CUSTOM_FONT = "use_custom_font"
+const val PREFERENCE_THEME_MODE = "theme_mode"
 const val PREFERENCE_JUST_BLACK_THEME = "just_black_theme"
 const val PREFERENCE_STATUSES_LOCATION = "statuses_location"
-const val PREFERENCE_LONG_PRESS_ACTION = "long_press_action"
 const val PREFERENCE_LANGUAGE = "language_name"
 const val PREFERENCE_WHATSAPP_ICON = "whatsapp_icon"
 const val PREFERENCE_EXCLUDE_SAVED_STATUSES = "exclude_saved_statuses"
-const val PREFERENCE_EXCLUDE_OLD_STATUSES = "exclude_old_statuses"
+const val PREFERENCE_SAVE_LOCATION = "preferred_save_location"
 const val PREFERENCE_QUICK_DELETION = "quick_deletion"
 const val PREFERENCE_DEFAULT_CLIENT = "default_client"
 const val PREFERENCE_GRANT_PERMISSIONS = "grant_permissions"
@@ -161,3 +186,4 @@ const val PREFERENCE_LAST_UPDATE_ID = "last_update_id"
 const val PREFERENCE_ANALYTICS_ENABLED = "analytics_enabled"
 const val BLACKLISTED_MESSAGE_SENDERS = "blacklisted_message_senders"
 const val PREFERENCE_ENABLE_MESSAGE_VIEW = "enable_message_view"
+const val PREFERENCE_PLAYBACK_SPEED = "playback_speed"

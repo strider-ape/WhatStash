@@ -16,46 +16,35 @@ package com.simplified.wsstatussaver.activities
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.FrameLayout
-import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.navigation.NavigationBarView
 import com.simplified.wsstatussaver.R
 import com.simplified.wsstatussaver.WhatSaveViewModel
-import com.simplified.wsstatussaver.activities.base.AbsBaseActivity
-import com.simplified.wsstatussaver.dialogs.AboutDialog
+import com.simplified.wsstatussaver.activities.base.BaseActivity
 import com.simplified.wsstatussaver.dialogs.UpdateDialog
-import com.simplified.wsstatussaver.extensions.*
-import com.simplified.wsstatussaver.fragments.base.AbsStatusesFragment
+import com.simplified.wsstatussaver.extensions.getPreferredClient
+import com.simplified.wsstatussaver.extensions.whichFragment
 import com.simplified.wsstatussaver.update.isAbleToUpdate
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * @author Christians Martínez Alvarado (mardous)
  */
-class StatusesActivity : AbsBaseActivity(), NavigationBarView.OnItemReselectedListener,
-    NavController.OnDestinationChangedListener {
+class StatusesActivity : BaseActivity(), NavController.OnDestinationChangedListener {
 
     private val viewModel by viewModel<WhatSaveViewModel>()
-    private lateinit var contentView: FrameLayout
-    private lateinit var navigationView: NavigationBarView
+    private var globalNavController: NavController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        contentView = findViewById(R.id.main_container)
-        navigationView = findViewById(R.id.navigation_view)
-        navigationView.setOnItemReselectedListener(this)
 
-        val navController = whichFragment<NavHostFragment>(R.id.main_container)?.navController
-        if (navController != null) {
-            navController.addOnDestinationChangedListener(this)
-            navigationView.setupWithNavController(navController)
+        val navigationHost = whichFragment<NavHostFragment>(R.id.global_container)
+        globalNavController = navigationHost.navController.also {
+            it.addOnDestinationChangedListener(this)
         }
 
         if (savedInstanceState == null) {
@@ -73,6 +62,17 @@ class StatusesActivity : AbsBaseActivity(), NavigationBarView.OnItemReselectedLi
         }
     }
 
+    override fun onDestinationChanged(
+        controller: NavController,
+        destination: NavDestination,
+        arguments: Bundle?
+    ) {
+        when (destination.id) {
+            R.id.mainFragment -> lightSystemBars()
+            R.id.playbackFragment -> lightSystemBars(false)
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         menu.setupWhatsAppMenuItem(this)
@@ -85,43 +85,16 @@ class StatusesActivity : AbsBaseActivity(), NavigationBarView.OnItemReselectedLi
                 findNavController(R.id.main_container).navigate(R.id.settingsFragment)
                 return true
             }
-
-            R.id.action_about -> {
-                AboutDialog().show(supportFragmentManager, "ABOUT")
-                return true
-            }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
-        when (destination.id) {
-            R.id.homeFragment,
-            R.id.savedFragment,
-            R.id.toolsFragment -> hideBottomBar(false)
-            else -> hideBottomBar(true)
-        }
-    }
-
-    override fun onNavigationItemReselected(item: MenuItem) {
-        val currentFragment = currentFragment(R.id.main_container)
-        if (currentFragment is AbsStatusesFragment) {
-            currentFragment.scrollToTop()
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean =
         findNavController(R.id.main_container).navigateUp()
 
     override fun onDestroy() {
-        findNavController(R.id.main_container).removeOnDestinationChangedListener(this)
+        globalNavController?.removeOnDestinationChangedListener(this)
         super.onDestroy()
-    }
-
-    private fun hideBottomBar(hide: Boolean) {
-        if (hide) navigationView.hide() else navigationView.show()
-        val contentPadding = if (!hide) resources.getDimensionPixelSize(R.dimen.bottom_nav_height) else 0
-        contentView.updatePadding(bottom = contentPadding)
     }
 }
 
@@ -132,9 +105,9 @@ fun Menu.setupWhatsAppMenuItem(activity: FragmentActivity) {
     if (client != null) {
         this.add(
             Menu.NONE, R.id.action_launch_client,
-            Menu.FIRST, activity.getString(R.string.launch_x_client, client.getLabel(activity))
+            Menu.FIRST, activity.getString(R.string.launch_x_client, client.displayName)
         )
-            .setIcon(R.drawable.ic_whatsapp_24dp)
+            .setIcon(R.drawable.ic_open_in_new_24dp)
             .setIntent(client.getLaunchIntent(activity.packageManager))
             .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
     }

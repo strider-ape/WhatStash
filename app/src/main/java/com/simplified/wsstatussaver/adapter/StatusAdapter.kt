@@ -17,24 +17,32 @@
 package com.simplified.wsstatussaver.adapter
 
 import android.annotation.SuppressLint
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.view.View.OnLongClickListener
+import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.DecodeFormat
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.android.material.card.MaterialCardView
 import com.simplified.wsstatussaver.R
+import com.simplified.wsstatussaver.adapter.base.AbsMultiSelectionAdapter
 import com.simplified.wsstatussaver.databinding.ItemStatusBinding
-import com.simplified.wsstatussaver.extensions.*
-import com.simplified.wsstatussaver.interfaces.IMultiStatusCallback
+import com.simplified.wsstatussaver.extensions.StatusMenu
+import com.simplified.wsstatussaver.extensions.getClientIfInstalled
+import com.simplified.wsstatussaver.extensions.getFormattedDate
+import com.simplified.wsstatussaver.extensions.getState
+import com.simplified.wsstatussaver.extensions.loadImage
+import com.simplified.wsstatussaver.interfaces.IStatusCallback
 import com.simplified.wsstatussaver.model.Status
+import com.simplified.wsstatussaver.model.StatusType
 import kotlin.properties.Delegates
 import kotlin.reflect.KProperty
 
@@ -44,15 +52,11 @@ import kotlin.reflect.KProperty
 @SuppressLint("NotifyDataSetChanged")
 open class StatusAdapter(
     protected val activity: FragmentActivity,
-    private val requestManager: RequestManager,
-    private val callback: IMultiStatusCallback,
+    private val callback: IStatusCallback,
     private var isSaveEnabled: Boolean,
     private var isDeleteEnabled: Boolean,
     isWhatsAppIconEnabled: Boolean
-) : RecyclerView.Adapter<StatusAdapter.ViewHolder>(), ActionMode.Callback {
-
-    var actionMode: ActionMode? = null
-    private val checked = ArrayList<Status>()
+) : AbsMultiSelectionAdapter<Status, StatusAdapter.ViewHolder>(activity, R.menu.menu_statuses_selection) {
 
     var statuses: List<Status> by Delegates.observable(ArrayList()) { _: KProperty<*>, _: List<Status>, _: List<Status> ->
         notifyDataSetChanged()
@@ -71,23 +75,26 @@ open class StatusAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val status = statuses[position]
 
-        holder.itemView.isActivated = isItemSelected(status)
-
-        if (holder.image != null) {
-            requestManager.load(status.fileUri)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .format(DecodeFormat.PREFER_RGB_565)
-                .centerCrop()
-                .into(holder.image)
+        val isSelected = isItemSelected(status)
+        if (holder.cardView != null) {
+            holder.cardView.isChecked = isSelected
+        } else {
+            holder.itemView.isActivated = isSelected
         }
 
-        if (holder.date != null && holder.date.isVisible) {
-            holder.date.text = status.getFormattedDate(activity)
+        holder.menu?.isGone = isSelected
+
+        holder.image?.loadImage(status)
+
+        if (holder.state != null) {
+            if (isSaveEnabled) {
+                holder.state.text = status.getState(activity)
+            } else {
+                holder.state.text = status.getFormattedDate(activity)
+            }
         }
 
-        if (holder.state != null && holder.state.isVisible) {
-            holder.state.text = status.getState(activity)
-        }
+        holder.playIcon?.isGone = isSaveEnabled || status.type == StatusType.IMAGE
 
         if (holder.clientIcon != null) {
             holder.clientIcon.isVisible = false
@@ -110,10 +117,8 @@ open class StatusAdapter(
         return statuses.size
     }
 
-    override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-        val menuInflater = mode.menuInflater
-        menuInflater.inflate(R.menu.menu_statuses_selection, menu)
-        return true
+    override fun getIdentifier(position: Int): Status {
+        return statuses[position]
     }
 
     override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
@@ -126,140 +131,58 @@ open class StatusAdapter(
         return false
     }
 
-    override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_select_all) {
-            checkAll()
-        } else {
-            callback.multiSelectionItemClick(item, ArrayList(checked))
-            finishActionMode()
-        }
-        return true
-    }
-
-    override fun onDestroyActionMode(mode: ActionMode?) {
-        clearChecked()
-        actionMode = null
-        onBackPressedCallback.remove()
-    }
-
-    private fun isItemSelected(status: Status) = actionMode != null && checked.contains(status)
-
-    private fun isMultiSelectionMode() = actionMode != null
-
-    private fun toggleItemChecked(position: Int): Boolean {
-        val identifier = statuses[position]
-        if (!checked.remove(identifier)) {
-            checked.add(identifier)
-        }
-        notifyItemChanged(position)
-        updateCab()
-        return true
-    }
-
-    private fun checkAll() {
-        if (actionMode != null) {
-            checked.clear()
-            for (i in statuses) {
-                checked.add(i)
-            }
-            notifyDataSetChanged()
-            updateCab()
-        }
-    }
-
-    private fun clearChecked() {
-        checked.clear()
-        notifyDataSetChanged()
-    }
-
-    private fun updateCab() {
-        if (actionMode == null) {
-            actionMode = (activity as AppCompatActivity).startSupportActionMode(this)
-            activity.onBackPressedDispatcher.addCallback(onBackPressedCallback)
-        }
-        val size = checked.size
-        if (size <= 0) actionMode?.finish()
-        else actionMode?.title = activity.getString(R.string.x_selected, size)
-    }
-
-    fun finishActionMode() {
-        actionMode?.finish()
-        clearChecked()
-    }
-
-    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            if (actionMode != null) {
-                actionMode?.finish()
-                remove()
-            }
-        }
+    override fun onMultiSelectionItemClick(menuItem: MenuItem, selection: List<Status>) {
+        callback.multiSelectionItemClick(menuItem, selection)
     }
 
     @SuppressLint("ClickableViewAccessibility")
     open inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener,
         OnLongClickListener {
         val image: ImageView?
-        val date: TextView?
         val state: TextView?
         val clientIcon: ImageView?
+        val playIcon: ImageView?
+        val menu: Button?
+        val cardView: MaterialCardView?
 
-        private val status: Status
-            get() = statuses[layoutPosition]
+        private val currentMenu: StatusMenu
+            get() = StatusMenu(statuses, layoutPosition, isSaveEnabled, isDeleteEnabled)
 
         init {
             val binding = ItemStatusBinding.bind(itemView)
             image = binding.image
-            date = binding.date
             state = binding.state
-            state.isVisible = isSaveEnabled
+            cardView = itemView as? MaterialCardView
+            cardView?.isCheckable = true
             clientIcon = binding.clientIcon
+            playIcon = binding.playIcon
+            menu = binding.menu
+            menu.setOnClickListener(this)
 
             itemView.setOnClickListener(this)
             itemView.setOnLongClickListener(this)
         }
 
         override fun onClick(view: View) {
-            if (!isSavingContent) {
-                if (isMultiSelectionMode()) {
-                    toggleItemChecked(layoutPosition)
-                } else {
-                    activity.showStatusOptions(status, isSaveEnabled, isDeleteEnabled, callback)
+            when (view) {
+                itemView -> {
+                    if (!isSavingContent) {
+                        if (isMultiSelectionMode()) {
+                            toggleItemChecked(layoutPosition)
+                        } else {
+                            callback.previewStatusesClick(statuses, layoutPosition)
+                        }
+                    }
+                }
+                menu -> {
+                    callback.showStatusMenu(currentMenu)
                 }
             }
         }
 
         override fun onLongClick(view: View): Boolean {
             if (!isSavingContent) {
-                when (activity.preferences().getLongPressAction()) {
-                    LongPressAction.VALUE_MULTI_SELECTION -> {
-                        return toggleItemChecked(layoutPosition)
-                    }
-
-                    LongPressAction.VALUE_PREVIEW -> {
-                        callback.previewStatusClick(status)
-                        return true
-                    }
-
-                    LongPressAction.VALUE_SAVE -> {
-                        if (isSaveEnabled) {
-                            callback.saveStatusClick(status)
-                        }
-                        return true
-                    }
-
-                    LongPressAction.VALUE_SHARE -> {
-                        callback.shareStatusClick(status)
-                        return true
-                    }
-
-                    LongPressAction.VALUE_DELETE -> {
-                        if (isDeleteEnabled) {
-                            callback.deleteStatusClick(status)
-                        }
-                        return true
-                    }
-                }
+                return toggleItemChecked(layoutPosition)
             }
             return false
         }

@@ -14,7 +14,11 @@
 package com.simplified.wsstatussaver.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 
 @Dao
 interface MessageDao {
@@ -23,6 +27,9 @@ interface MessageDao {
 
     @Delete
     fun removeMessage(messageEntity: MessageEntity)
+
+    @Delete
+    fun removeMessages(messages: List<MessageEntity>)
 
     @Query("DELETE FROM received_messages WHERE received_from = :sender")
     fun deleteConversation(sender: String)

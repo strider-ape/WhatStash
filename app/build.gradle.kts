@@ -1,59 +1,117 @@
 import java.util.Properties
-import java.io.FileInputStream
+
+val isNormalBuild: Boolean by rootProject.extra
 
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.agp)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     id("kotlin-parcelize")
-    id("kotlin-kapt")
-    id("com.google.devtools.ksp")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
-    id("androidx.navigation.safeargs")
+    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.androidx.safeargs)
 }
 
-val keystorePropertiesFile = rootProject.file("keystore.properties")
-val keystoreProperties = Properties()
-keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+if (isNormalBuild) {
+    apply(plugin = "com.google.gms.google-services")
+    apply(plugin = "com.google.firebase.crashlytics")
+}
+
+sealed class Version(
+    private val versionMajor: Int,
+    private val versionMinor: Int,
+    private val versionPatch: Int,
+    private val versionBuild: Int = 0,
+    private val versionType: String = ""
+) {
+    class Alpha(versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int) :
+        Version(versionMajor, versionMinor, versionPatch, versionBuild, "alpha")
+
+    class Beta(versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int) :
+        Version(versionMajor, versionMinor, versionPatch, versionBuild, "beta")
+
+    class RC(versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int) :
+        Version(versionMajor, versionMinor, versionPatch, versionBuild, "rc")
+
+    class Stable(versionMajor: Int, versionMinor: Int, versionPatch: Int) :
+        Version(versionMajor, versionMinor, versionPatch)
+
+    fun toVersionName(): String {
+        val versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
+        if (versionType.isNotEmpty()) {
+            return "$versionName-${versionType}.$versionBuild"
+        }
+        return versionName
+    }
+
+    fun toVersionCode(): Int =
+        versionMajor * 1000 + versionMinor * 100 + versionPatch * 10 + versionBuild
+}
+
+val currentVersion: Version = Version.Beta(
+    versionMajor = 2,
+    versionMinor = 1,
+    versionPatch = 0,
+    versionBuild = 3
+)
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     namespace = "com.simplified.wsstatussaver"
 
     defaultConfig {
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
 
         applicationId = namespace
-        versionCode = 109
-        versionName = "1.2.5"
+        versionCode = currentVersion.toVersionCode()
+        versionName = currentVersion.toVersionName()
     }
 
-    signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
+    val signingProperties = getProperties("keystore.properties")
+    val releaseSigning = if (signingProperties != null) {
+        signingConfigs.create("release") {
+            keyAlias = signingProperties.property("keyAlias")
+            keyPassword = signingProperties.property("keyPassword")
+            storePassword = signingProperties.property("storePassword")
+            storeFile = file(signingProperties.property("storeFile"))
         }
+    } else {
+        signingConfigs.getByName("debug")
     }
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = releaseSigning
         }
         debug {
-            signingConfig = signingConfigs.getByName("release")
             versionNameSuffix = " DEBUG"
             applicationIdSuffix = ".debug"
+            signingConfig = releaseSigning
+        }
+    }
+    flavorDimensions += "version"
+    productFlavors {
+        create("normal") {
+            dimension = "version"
+        }
+        create("fdroid") {
+            dimension = "version"
+        }
+    }
+    applicationVariants.all {
+        outputs.all {
+            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+                "WhatSave-v${defaultConfig.versionName}-${name}.apk"
         }
     }
     buildFeatures {
         buildConfig = true
-        dataBinding = true
         viewBinding = true
+    }
+    androidResources {
+        generateLocaleConfig = true
     }
     packaging {
         resources {
@@ -64,12 +122,8 @@ android {
         abortOnError = true
         warning += listOf("ImpliedQuantity", "Instantiatable", "MissingQuantity", "MissingTranslation")
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
     kotlinOptions {
-        jvmTarget = "1.8"
+        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
     dependenciesInfo {
         includeInApk = false
@@ -77,59 +131,75 @@ android {
     }
 }
 
+kotlin {
+    jvmToolchain(21)
+}
+
+fun getProperties(fileName: String): Properties? {
+    val file = rootProject.file(fileName)
+    return if (file.exists()) {
+        Properties().also { properties ->
+            file.inputStream().use { properties.load(it) }
+        }
+    } else null
+}
+
+fun Properties.property(key: String) =
+    this.getProperty(key) ?: "$key missing"
+
 dependencies {
     // Google/JetPack
     //https://developer.android.com/jetpack/androidx/versions
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("androidx.annotation:annotation:1.7.1")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.splashscreen)
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.fragment.ktx)
 
-    val lifecycleVersion = "2.7.0"
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.lifecycle.common.java8)
 
-    val navigationVersion = "2.7.7"
-    implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
-    implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
+    implementation(libs.navigation.fragment.ktx)
+    implementation(libs.navigation.ui.ktx)
 
-    val roomVersion = "2.6.1"
-    implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
-    implementation("androidx.loader:loader:1.1.0")
-    implementation("androidx.cardview:cardview:1.0.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("androidx.viewpager2:viewpager2:1.0.0")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("com.google.android.material:material:1.11.0")
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.loader)
+    implementation(libs.androidx.cardview)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.preference.ktx)
+    implementation(libs.material.components)
 
     //Firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    "normalImplementation"(platform(libs.firebase.bom))
+    "normalImplementation"(libs.firebase.analytics)
+    "normalImplementation"(libs.firebase.crashlytics)
 
-    val koinVersion = "3.5.3"
-    implementation("io.insert-koin:koin-core:$koinVersion")
-    implementation("io.insert-koin:koin-android:$koinVersion")
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
 
-    val retrofitVersion = "2.10.0"
-    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
-    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("io.github.g00fy2:versioncompare:1.5.0")
-    implementation("io.michaelrocks:libphonenumber-android:8.13.28")
-    implementation("org.ocpsoft.prettytime:prettytime:5.0.4.Final")
+    implementation(libs.coil)
+    implementation(libs.coil.video)
+
+    implementation(libs.photoview)
+    implementation(libs.bundles.ktor)
+    implementation(libs.versioncompare)
+    implementation(libs.libphonenumber)
+    implementation(libs.prettytime)
+    implementation(libs.advrecyclerview)
+
+    implementation(libs.markdown.core)
+    implementation(libs.markdown.html)
 
     // Kotlin
-    val kotlinCoroutinesVersion = "1.8.0"
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutinesVersion")
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 }

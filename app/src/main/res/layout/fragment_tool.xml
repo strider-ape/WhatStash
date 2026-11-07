@@ -18,7 +18,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:transitionGroup="true">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -29,9 +28,9 @@
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar_layout"
-            style="?collapsingToolbarLayoutLargeStyle"
+            style="?collapsingToolbarLayoutMediumStyle"
             android:layout_width="match_parent"
-            android:layout_height="?collapsingToolbarLayoutLargeSize"
+            android:layout_height="?collapsingToolbarLayoutMediumSize"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -46,8 +45,12 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="16dp"
+        android:scrollbars="none"
+        android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -57,17 +60,20 @@
 
             <com.simplified.wsstatussaver.views.ToolView
                 android:id="@+id/msg_a_number"
+                style="@style/ToolCardViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:toolIcon="@drawable/ic_round_message_24dp"
+                app:toolIcon="@drawable/ic_send_24dp"
                 app:toolName="@string/msg_a_number"
                 app:toolDescription="@string/msg_a_number_description"/>
 
             <com.simplified.wsstatussaver.views.ToolView
                 android:id="@+id/message_view"
+                style="@style/ToolCardViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:toolIcon="@drawable/ic_subject_24dp"
+                android:layout_marginTop="16dp"
+                app:toolIcon="@drawable/ic_chat_24dp"
                 app:toolName="@string/message_view"
                 app:toolDescription="@string/message_view_description"/>
 

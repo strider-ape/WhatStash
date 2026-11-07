@@ -25,18 +25,22 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.service.notification.NotificationListenerService
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
-import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.net.toUri
+import androidx.core.os.BundleCompat
 import androidx.core.text.HtmlCompat
 import com.simplified.wsstatussaver.getApp
 import com.simplified.wsstatussaver.logUrlView
+import com.simplified.wsstatussaver.recordException
 import com.simplified.wsstatussaver.service.MessageCatcherService
 import java.io.Serializable
 import java.io.UnsupportedEncodingException
@@ -57,15 +61,6 @@ fun Context.openWeb(url: String) {
         Intent(Intent.ACTION_VIEW, url.toUri())
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     )
-}
-
-fun Context.openGooglePlay(appPackage: String = packageName) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackage"))
-    if (intent.resolveActivity(packageManager) != null) {
-        startActivity(intent)
-        return
-    }
-    startActivitySafe(Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/details?id=$appPackage".toUri()))
 }
 
 fun Context.bindNotificationListener(): Boolean {
@@ -90,7 +85,7 @@ fun Context.isNotificationListener(): Boolean {
 }
 
 fun Context.doIHavePermissions(vararg permissions: String): Boolean {
-    if (permissions.isEmpty()) return false
+    if (permissions.isEmpty()) return true
     for (permission in permissions) {
         if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
             return false
@@ -118,6 +113,9 @@ fun Context.isOnline(requestOnlyWifi: Boolean): Boolean {
     return false
 }
 
+inline fun <reified T : Parcelable> Bundle.parcelableList(key: String, clazz: KClass<T>) =
+    BundleCompat.getParcelableArrayList(this, key, clazz.java)
+
 @Suppress("DEPRECATION")
 inline fun <reified T : Serializable> Bundle.serializable(key: String, clazz: KClass<T>): T? =
     if (hasT()) {
@@ -133,8 +131,6 @@ fun PackageManager.packageInfo(packageName: String = getApp().packageName): Pack
         getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
     } else getPackageInfo(packageName, 0)
 
-fun PackageInfo.versionCode() = PackageInfoCompat.getLongVersionCode(this).toInt()
-
 fun Context.startActivitySafe(intent: Intent?, onError: ExceptionConsumer? = null) {
     intent.doWithIntent(onError) { startActivity(it) }
 }
@@ -145,11 +141,6 @@ fun Context.showToast(messageRes: Int, duration: Int = Toast.LENGTH_SHORT) {
 
 fun Context.showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, message, duration).show()
-}
-
-fun Intent?.toChooser(title: CharSequence? = null): Intent? {
-    if (this == null) return null
-    return Intent.createChooser(this, title)
 }
 
 fun String.formattedAsHtml() = HtmlCompat.fromHtml(this, HtmlCompat.FROM_HTML_MODE_COMPACT)
@@ -175,6 +166,14 @@ internal fun Intent?.doWithIntent(onError: ExceptionConsumer?, doAction: (Intent
         }.onFailure {
             onError?.invoke(it, it is ActivityNotFoundException)
         }
+    }
+}
+
+fun <T> ActivityResultLauncher<T>.launchSafe(input: T, options: ActivityOptionsCompat? = null) {
+    try {
+        launch(input, options)
+    } catch (e: ActivityNotFoundException) {
+        recordException(e)
     }
 }
 

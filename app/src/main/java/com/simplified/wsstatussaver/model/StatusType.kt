@@ -14,11 +14,16 @@
 package com.simplified.wsstatussaver.model
 
 import android.annotation.TargetApi
+import android.content.ContentResolver
+import android.content.ContentUris
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore.MediaColumns
 import androidx.annotation.StringRes
 import com.simplified.wsstatussaver.R
+import com.simplified.wsstatussaver.extensions.acceptFileName
 import com.simplified.wsstatussaver.extensions.getNewSaveName
 import java.io.File
 
@@ -26,8 +31,8 @@ import java.io.File
  * @author Christians Martínez Alvarado (mardous)
  */
 enum class StatusType(@StringRes val nameRes: Int, val format: String, private val saveType: StatusSaveType) {
-    IMAGE(R.string.type_image, ".jpg", StatusSaveType.IMAGE_SAVE),
-    VIDEO(R.string.type_video, ".mp4", StatusSaveType.VIDEO_SAVE);
+    IMAGE(R.string.type_images, ".jpg", StatusSaveType.IMAGE_SAVE),
+    VIDEO(R.string.type_videos, ".mp4", StatusSaveType.VIDEO_SAVE);
 
     fun getDefaultSaveName(timeMillis: Long, delta: Int): String = getNewSaveName(this, timeMillis, delta = delta)
 
@@ -35,10 +40,29 @@ enum class StatusType(@StringRes val nameRes: Int, val format: String, private v
 
     val mimeType: String get() = saveType.fileMimeType
 
-    @get:TargetApi(Build.VERSION_CODES.Q)
-    val relativePath: String
-        get() = String.format("%s/%s", saveType.dirType, saveType.dirName)
+    @TargetApi(Build.VERSION_CODES.Q)
+    fun getRelativePath(location: SaveLocation): String =
+        String.format("%s/%s", saveType.dirTypeProvider(location), saveType.dirName)
 
-    val savesDirectory: File
-        get() = File(Environment.getExternalStoragePublicDirectory(saveType.dirType), saveType.dirName)
+    fun getSavesDirectory(location: SaveLocation): File =
+        File(Environment.getExternalStoragePublicDirectory(saveType.dirTypeProvider(location)), saveType.dirName)
+
+    fun getSavedContentFiles(location: SaveLocation): Array<File> {
+        val directory = getSavesDirectory(location)
+        return directory.listFiles { _, name -> acceptFileName(name) } ?: emptyArray()
+    }
+
+    fun getSavedMedia(contentResolver: ContentResolver): Cursor? {
+        val projection = arrayOf(
+            MediaColumns._ID,
+            MediaColumns.DISPLAY_NAME,
+            MediaColumns.DATE_MODIFIED,
+            MediaColumns.SIZE,
+            MediaColumns.RELATIVE_PATH
+        )
+        val entries = SaveLocation.entries
+        val selection = entries.joinToString(" OR ") { "${MediaColumns.RELATIVE_PATH} LIKE ?" }
+        val arguments = entries.map { "%${getRelativePath(it)}%" }.toTypedArray()
+        return contentResolver.query(contentUri, projection, selection, arguments, null)
+    }
 }

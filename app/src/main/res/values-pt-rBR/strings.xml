@@ -11,15 +11,10 @@
   ~ This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
   ~ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   ~ See the GNU General Public License for more details.
-  -->
-
-<resources>
-    <string name="type_image">Imagem</string>
-    <string name="type_video">Vídeo</string>
+  --><resources>
+    <string name="type_images">Imagem</string>
+    <string name="type_videos">Vídeo</string>
     <string name="close_action">Fechar</string>
-    <string name="preview_action">Visualização</string>
-    <string name="view_image_action">Ver imagem</string>
-    <string name="play_video_action">Reproduzir vídeo</string>
     <string name="save_action">Salvar</string>
     <string name="share_action">Compartilhar</string>
     <string name="share_with">Compartilhar com…</string>
@@ -35,7 +30,6 @@
     <string name="could_not_load_statuses">Não foi possível carregar os status</string>
     <string name="no_statuses_title">Sem status</string>
     <string name="save_some_statuses">Salve alguns status</string>
-    <string name="install_wa_action">Instale o WhatsApp</string>
     <string name="open_wa_action">Abra o WhatsApp</string>
     <string name="could_not_open_wa">Não foi possível abrir o WhatsApp</string>
     <string name="saving_status">Salvando status…</string>
@@ -50,10 +44,8 @@
     <string name="x_selected">%d selecionado</string>
     <string name="x_is_the_default_client_now">%s é o cliente padrão agora.</string>
     <string name="default_client_cleared">Cliente padrão desmarcado.</string>
-    <string name="client_info"><![CDATA[Versão <b>%s</b>]]></string>
-    <string name="client_info_unknown">Não foi possível carregar as informações do cliente.</string>
-    <string name="installed_clients_empty">Não há clientes WhatsApp instalados.</string>
     <string name="you_should_open_wa_and_download_some_statuses">Você deve ir ao WhatsApp e baixar alguns status</string>
+    <string name="there_may_be_no_saved_files">Pode ser que não haja arquivos salvos</string>
     <string name="wa_is_not_installed_title">O WhatsApp não está instalado</string>
     <string name="this_application_will_not_work">Este aplicativo não funcionará</string>
     <string name="launch_x_client">Iniciar %s</string>
@@ -62,7 +54,6 @@
     <string name="delete_saved_statuses_title">Excluir status salvos</string>
     <string name="this_saved_status_will_be_permanently_deleted">Este status salvo será excluído permanentemente.</string>
     <string name="x_saved_statuses_will_be_permanently_deleted">%d status salvos serão excluídos permanentemente.</string>
-    <string name="statuses_deletion_is_not_permitted">Leve em consideração que só é possível excluir status salvos</string>
     <string name="deleting_please_wait">Excluindo, aguarde…</string>
     <string name="deletion_success">Sucesso na exclusão.</string>
     <string name="deletion_failed">Falha na exclusão.</string>
@@ -70,31 +61,17 @@
     <string name="permissions_denied_message">Você deve conceder as permissões necessárias. Este aplicativo não funcionará corretamente sem essas permissões.</string>
     <string name="grant_action">Conceder</string>
     <string name="open_settings_action">Abrir configurações</string>
-    <string name="there_is_not_an_app_available_to_open_this_video">Não há um aplicativo disponível para abrir este vídeo</string>
-    <string name="there_is_not_an_app_available_to_open_this_image">Não há um aplicativo disponível para abrir esta imagem</string>
-    <string name="play_store_is_not_installed">A Play Store não está instalada.</string>
     <string name="action_settings">Configurações</string>
     <string name="settings_interface">Interface</string>
     <string name="settings_statuses">Status</string>
     <string name="settings_other">Outro</string>
     <string name="advanced">Avançado</string>
-    <string name="night_mode_title">Modo noturno</string>
-    <string name="night_mode_yes">Sim</string>
-    <string name="night_mode_no">Não</string>
-    <string name="night_mode_auto">Auto.</string>
     <string name="just_black_theme_title">Apenas preto</string>
     <string name="statuses_location_title">Localização dos status</string>
     <string name="statuses_location_summary">Local onde os status devem ser encontrados. Você deverá alterar essa configuração somente se o aplicativo não conseguir carregar status do local padrão.</string>
-    <string name="statuses_location_device">Dispositivo</string>
-    <string name="statuses_location_sd_card">Cartão SD</string>
-    <string name="statuses_location_default">Localização padrão</string>
     <string name="no_storage_device_found">Nenhum dispositivo de armazenamento encontrado</string>
-    <string name="exclude_old_statuses_title">Excluir status antigos</string>
-    <string name="exclude_old_statuses_summary">Se você estiver visualizando status antigos neste aplicativo.</string>
     <string name="exclude_saved_statuses_title">Excluir status salvos</string>
     <string name="exclude_saved_statuses_summary">Se ativado, os status salvos não aparecerão na página principal. Eles estarão acessíveis somente na página \"Salvos\".</string>
-    <string name="multi_selection_title">Seleção múltipla</string>
-    <string name="long_press_action_title">Ação de pressão longa</string>
     <string name="whatsapp_icon_title">Ícone pequeno do WhatsApp</string>
     <string name="whatsapp_icon_summary">Exiba um pequeno ícone abaixo de cada status para identificar de qual cliente ele foi obtido.</string>
     <string name="quick_deletion_title">Exclusão rápida</string>
@@ -105,14 +82,13 @@
     <string name="default_client_summary">Se você tiver vários clientes WhatsApp instalados, poderá selecionar aquele para carregar os status.</string>
     <string name="analytics_enabled_title">Enviar estatísticas de uso</string>
     <string name="analytics_enabled_summary">Quando ativado, o WhatSave pode enviar estatísticas de uso anônimas que nos ajudam a entender como os usuários usam o aplicativo.</string>
-    <string name="about_label">Sobre</string>
+    <string name="about_title">Sobre</string>
     <string name="version_x">Versão %s</string>
     <string name="author_title">Autor</string>
     <string name="contact_title">Contato</string>
     <string name="contact_summary">Se você precisar de ajuda ou suporte.</string>
     <string name="fork_on_github_title">Fork no GitHub</string>
     <string name="fork_on_github_summary">Visualize, bifurque ou baixe fontes de aplicativos.</string>
-    <string name="legal_notices">Noticias legais</string>
     <string name="message_view_is_disabled">Visualização de mensagens desativada</string>
     <string name="you_wont_be_able_to_see_messages_here">Você não poderá ver mensagens do WhatsApp apagadas ou recebidas aqui.</string>
     <string name="message_view">Visualização de mensagens</string>
@@ -131,9 +107,10 @@
     <string name="disable_message_view_confirmation">Quando você desativa a visualização de mensagens, todas as mensagens salvas aqui serão excluídas. Tem certeza?</string>
     <string name="delete_conversation_title">Excluir conversa</string>
     <string name="delete_conversation_confirmation">Isso excluirá todas as mensagens desta conversa.</string>
-    <string name="delete_message_title">Excluir mensagem</string>
-    <string name="delete_message_confirmation">Você deseja excluir esta mensagem?</string>
+    <string name="delete_conversations_title">Excluir conversas</string>
+    <string name="delete_x_conversations_confirmation">%d conversas serão excluídas permanentemente.</string>
     <string name="blacklist_sender">Não salvar mensagens deste remetente</string>
+    <string name="blacklist_senders">Não salve mensagens destes remetentes</string>
     <string name="blacklisted_senders">Remetentes na lista negra</string>
     <string name="no_blacklisted_senders">Aqui serão mostradas as pessoas das quais você não deseja salvar as mensagens.</string>
     <string name="remove_x_from_the_blacklist">Deseja remover <b>%s</b> desta lista negra?</string>
@@ -162,13 +139,9 @@
     <string name="only_wifi_summary">Procure atualizações apenas quando o Wi-Fi estiver conectado.</string>
     <string name="the_app_is_up_to_date">O aplicativo está atualizado</string>
     <string name="update_title">Atualização disponível</string>
-    <string name="release_date">Datas de lançamento: %s</string>
-    <string name="download_size">Tamanho do download: %s</string>
     <string name="download_action">Download</string>
     <string name="more_info_action">Mais informações.</string>
     <string name="downloading_update">Baixando a atualização do WhatSave</string>
-    <string name="special_permissions_title">Permissões de acesso especial</string>
-    <string name="special_permissions_description">Por favor, selecione os clientes dos quais deseja carregar os status:</string>
     <string name="storage_permission_label">Você deve conceder as seguintes permissões necessárias antes de continuar:</string>
     <string name="storage_access_title">Acesso ao armazenamento</string>
     <string name="storage_access_description">É necessário permissão para acessar e salvar status em seu dispositivo.</string>
@@ -176,10 +149,8 @@
     <string name="select_the_correct_location">Por favor, selecione a localização correta.</string>
     <string name="continue_action">Continuar</string>
     <string name="revoke_permissions_title">Revogar permissões</string>
-    <string name="revoke_permissions_message"><![CDATA[Ao remover essas permissões, este aplicativo não poderá carregar e salvar os status de <b>%s</b> até que você conceda as permissões novamente.]]></string>
     <string name="revoke_action">Revogar</string>
     <string name="permissions_revoked_successfully">Permissões revogadas com sucesso.</string>
     <string name="grant_permissions">Conceder permissões</string>
     <string name="privacy_and_terms">Privacidade e termos</string>
-    <string name="privacy_notice">Ao pressionar \"Continuar\", assumiremos que você leu e aceitou nossa Política de Privacidade e Termos de Uso.</string>
 </resources>

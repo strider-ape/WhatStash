@@ -13,14 +13,15 @@
  */
 package com.simplified.wsstatussaver.extensions
 
-import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.CompoundButton
+import android.widget.TextView
 import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
 import androidx.core.view.drawToBitmap
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -33,19 +34,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigationrail.NavigationRailView
+import io.noties.markwon.Markwon
+import io.noties.markwon.html.HtmlPlugin
 
-private const val WHATSAVE_ANIM_TIME = 350L
+const val WHATSAVE_ANIM_TIME = 350L
 
-fun View.animateAlpha(value: Float) {
-    if (value == alpha)
-        return
-
-    val animator = ObjectAnimator.ofFloat(this, View.ALPHA, alpha, value)
-        .setDuration(WHATSAVE_ANIM_TIME)
-    animator.doOnStart { setLayerType(View.LAYER_TYPE_HARDWARE, null) }
-    animator.doOnEnd { setLayerType(View.LAYER_TYPE_NONE, null) }
-    animator.start()
-}
+fun View.isLandscape() = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
 /**
  * Potentially animate showing a [NavigationBarView].
@@ -142,10 +136,23 @@ fun ViewPager2.doOnPageSelected(lifecycleOwner: LifecycleOwner, onSelected: (pos
             if (event == Lifecycle.Event.ON_DESTROY) {
                 unregisterOnPageChangeCallback(callback)
             }
+            lifecycle.removeObserver(this)
         }
     })
 }
 
 fun ViewPager2.findCurrentFragment(fragmentManager: FragmentManager): Fragment? {
     return fragmentManager.findFragmentByTag("f$currentItem")
+}
+
+fun TextView.setMarkdownText(str: String) {
+    val markwon = Markwon.builder(context)
+        .usePlugin(HtmlPlugin.create())
+        .build()
+
+    markwon.setMarkdown(this, str)
+}
+
+fun CompoundButton.check(isChecked: Boolean) {
+    post { this.isChecked = isChecked }
 }

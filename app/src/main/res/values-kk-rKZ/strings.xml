@@ -11,15 +11,10 @@
   ~ This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
   ~ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   ~ See the GNU General Public License for more details.
-  -->
-
-<resources>
-    <string name="type_image">Кескін</string>
-    <string name="type_video">Бейне</string>
+  --><resources>
+    <string name="type_images">Кескін</string>
+    <string name="type_videos">Бейне</string>
     <string name="close_action">Жабық</string>
-    <string name="preview_action">Алдын ала қарау</string>
-    <string name="view_image_action">Суретті көру</string>
-    <string name="play_video_action">Бейнені ойнату</string>
     <string name="save_action">Сақтау</string>
     <string name="share_action">Бөлісу</string>
     <string name="share_with">Бөлісу…</string>
@@ -35,7 +30,6 @@
     <string name="could_not_load_statuses">Статустарды жүктей алмайтынды</string>
     <string name="no_statuses_title">Статус жоқ</string>
     <string name="save_some_statuses">Кейбір күйлерді сақтаңыз</string>
-    <string name="install_wa_action">WhatsApp орнатыңыз</string>
     <string name="open_wa_action">WhatsApp қолданбасын ашыңыз</string>
     <string name="could_not_open_wa">WhatsApp ашу мүмкін болмады</string>
     <string name="saving_status">Күй сақталуда…</string>
@@ -50,10 +44,8 @@
     <string name="x_selected">%d таңдалды</string>
     <string name="x_is_the_default_client_now">%s қазір әдепкі клиент болып табылады.</string>
     <string name="default_client_cleared">Әдепкі клиент тазартылды.</string>
-    <string name="client_info"><![CDATA[<b>%s</b> нұсқасы]]></string>
-    <string name="client_info_unknown">Клиент ақпаратын жүктеу мүмкін емес.</string>
-    <string name="installed_clients_empty">WhatsApp клиенттері орнатылмаған.</string>
     <string name="you_should_open_wa_and_download_some_statuses">WhatsApp-қа кіріп, бірнеше мәртебелерді жүктеп алу керек</string>
+    <string name="there_may_be_no_saved_files">Сақталған файлдар болмаған болуы мүмкін</string>
     <string name="wa_is_not_installed_title">WhatsApp орнатылмаған</string>
     <string name="this_application_will_not_work">Бұл қолданба жұмыс істемейді</string>
     <string name="launch_x_client">%s іске қосыңыз</string>
@@ -62,7 +54,6 @@
     <string name="delete_saved_statuses_title">Сақталған күйлерді жою</string>
     <string name="this_saved_status_will_be_permanently_deleted">Бұл сақталған күй біржола жойылады.</string>
     <string name="x_saved_statuses_will_be_permanently_deleted">%d сақталған күй біржола жойылады.</string>
-    <string name="statuses_deletion_is_not_permitted">Тек сақталған күйлерді жоя алатынын ескеріңіз</string>
     <string name="deleting_please_wait">Жойылуда, күте тұрыңыз…</string>
     <string name="deletion_success">Жою сәтті болды.</string>
     <string name="deletion_failed">Жою сәтсіз аяқталды.</string>
@@ -70,31 +61,17 @@
     <string name="permissions_denied_message">Қажетті рұқсаттарды беруіңіз керек. Бұл қолданба осы рұқсаттарсыз дұрыс жұмыс істемейді.</string>
     <string name="grant_action">Грант</string>
     <string name="open_settings_action">Параметрлерді ашыңыз</string>
-    <string name="there_is_not_an_app_available_to_open_this_video">Бұл бейнені ашу үшін қолжетімді қолданба жоқ</string>
-    <string name="there_is_not_an_app_available_to_open_this_image">Бұл кескінді ашу үшін қолжетімді қолданба жоқ</string>
-    <string name="play_store_is_not_installed">Play Store орнатылмаған.</string>
     <string name="action_settings">Параметрлер</string>
     <string name="settings_interface">Интерфейс</string>
     <string name="settings_statuses">Күйлер</string>
     <string name="settings_other">Басқа</string>
     <string name="advanced">Озат</string>
-    <string name="night_mode_title">Түнгі режим</string>
-    <string name="night_mode_yes">Иә</string>
-    <string name="night_mode_no">Жоқ</string>
-    <string name="night_mode_auto">Автоматты.</string>
     <string name="just_black_theme_title">Тек Қара</string>
     <string name="statuses_location_title">Күйлердің орналасуы</string>
     <string name="statuses_location_summary">Күйлерді табу керек орын. Бұл параметрді қолданба күйлерді әдепкі орыннан жүктей алмаса ғана өзгертуіңіз керек.</string>
-    <string name="statuses_location_device">Құрылғы</string>
-    <string name="statuses_location_sd_card">SD картасы</string>
-    <string name="statuses_location_default">Әдепкі орын</string>
     <string name="no_storage_device_found">Ешбір сақтау құрылғысы табылмады</string>
-    <string name="exclude_old_statuses_title">Ескі күйлерді алып тастаңыз</string>
-    <string name="exclude_old_statuses_summary">Егер сіз осы қолданбадағы ескі күйлерді көріп жатсаңыз.</string>
     <string name="exclude_saved_statuses_title">Сақталған күйлерді қоспаңыз</string>
     <string name="exclude_saved_statuses_summary">Қосылған болса, сақталған күйлер негізгі бетте көрсетілмейді. Оларға тек \"Сақталған\" бетінен қол жеткізуге болады.</string>
-    <string name="multi_selection_title">Көп таңдау</string>
-    <string name="long_press_action_title">Ұзақ басу әрекеті</string>
     <string name="whatsapp_icon_title">Кішкентай WhatsApp белгішесі</string>
     <string name="whatsapp_icon_summary">Қай клиенттен алынғанын анықтау үшін әрбір күйдің астында шағын белгішені көрсетіңіз.</string>
     <string name="quick_deletion_title">Жылдам жою</string>
@@ -105,14 +82,13 @@
     <string name="default_client_summary">Егер сізде бірнеше WhatsApp клиенті орнатылған болса, күйлерді жүктейтін біреуін таңдауға болады.</string>
     <string name="analytics_enabled_title">Пайдалану статистикасын жіберіңіз</string>
     <string name="analytics_enabled_summary">Бұл қосылған кезде, WhatSave пайдаланушылардың қолданбаны қалай пайдаланатынын түсінуге көмектесетін анонимді пайдалану статистикасын жіберуі мүмкін.</string>
-    <string name="about_label">туралы</string>
+    <string name="about_title">туралы</string>
     <string name="version_x">%s нұсқасы</string>
     <string name="author_title">Автор</string>
     <string name="contact_title">Байланыс</string>
     <string name="contact_summary">Егер сізге көмек немесе қолдау қажет болса.</string>
     <string name="fork_on_github_title">GitHub сайтындағы шанышқы</string>
     <string name="fork_on_github_summary">Қолданба көздерін қараңыз, ашыңыз немесе жүктеп алыңыз.</string>
-    <string name="legal_notices">Құқықтық ескертулер</string>
     <string name="message_view_is_disabled">Хабарлама көрінісі өшірілді</string>
     <string name="you_wont_be_able_to_see_messages_here">Сіз бұл жерде уақытша алып тасталған немесе алып келген WhatsApp хабарларын көре алмайсыз.</string>
     <string name="message_view">Хабарлама көрінісі</string>
@@ -131,9 +107,10 @@
     <string name="disable_message_view_confirmation">Хабарлама көрінісін ажыратудан кейін бұл жерде сақталған барлық хабарламалар жойылады. Сіз сенімдісіз бе?</string>
     <string name="delete_conversation_title">Жақты алып тастау</string>
     <string name="delete_conversation_confirmation">Бұл жақтынан барлық хабарламалар жойылады.</string>
-    <string name="delete_message_title">Хабарламаны алып тастау</string>
-    <string name="delete_message_confirmation">Сіз бұл хабарламаны алып тастау келісімінен өтінеміз ме?</string>
+    <string name="delete_conversations_title">Әңгімелерді жою</string>
+    <string name="delete_x_conversations_confirmation">%d әңгіме мәңгілікке жойылады.</string>
     <string name="blacklist_sender">Бұл жіберушіден хабарламаларды сақтау</string>
+    <string name="blacklist_senders">Бұл жіберушілерден келген хабарларды сақтамаңыз</string>
     <string name="blacklisted_senders">Қара тізімге алып тасталған жіберушілер</string>
     <string name="no_blacklisted_senders">Сіздің хабарламаларыңызды сақтауға қалайтыныңызды білмейді мейлімдейтін адамдарды көрсетеді.</string>
     <string name="remove_x_from_the_blacklist">%s бұл қара тізімнен аластату келісімінен өтінеміз ме?</string>
@@ -162,13 +139,9 @@
     <string name="only_wifi_summary">Wi-Fi қосылған кезде ғана жаңартуларды іздеңіз.</string>
     <string name="the_app_is_up_to_date">Қолданба жаңартылған</string>
     <string name="update_title">Жаңарту қолжетімді</string>
-    <string name="release_date">Шығарылған күні: %s</string>
-    <string name="download_size">Жүктеп алу өлшемі: %s</string>
     <string name="download_action">Жүктеп алу</string>
     <string name="more_info_action">Қосымша ақпарат.</string>
     <string name="downloading_update">WhatSave жаңартуы жүктелуде</string>
-    <string name="special_permissions_title">Арнайы кіру рұқсаттары</string>
-    <string name="special_permissions_description">Сіздің статустарын жүктеу үшін келесі клиенттерді таңдауыңызды сұрау едіміз:</string>
     <string name="storage_permission_label">Жалғастырудан бұрын келесі қажетті рұқсаттарды беруіңіз келеді:</string>
     <string name="storage_access_title">Сақтау қолдану</string>
     <string name="storage_access_description">Сіздің құрылғыңыздағы статустарға қолдану және сақтау үшін сақтау рұқсаты қажет.</string>
@@ -176,10 +149,8 @@
     <string name="select_the_correct_location">Өтініш, дұрыс орнын таңдауыңыз.</string>
     <string name="continue_action">Жалғастыру</string>
     <string name="revoke_permissions_title">Рұқсаттарды тастау</string>
-    <string name="revoke_permissions_message"><![CDATA[Бұл рұқсаттарды алып тастайымы, бұл қолданба <b>%s</b> статустарын жүктеу және сақтау мүмкін болмайды, сіз қайтадан рұқсат бергенге дейін.]]></string>
     <string name="revoke_action">Тастау</string>
     <string name="permissions_revoked_successfully">Рұқсаттар сәтті тасталды.</string>
     <string name="grant_permissions">Рұқсат беру</string>
     <string name="privacy_and_terms">Құпиялық және шарттар</string>
-    <string name="privacy_notice">\"Жалғастыру\" түймесін басу арқылы сіз біздің Құпиялық саясаты мен пайдалану шарттарын оқып, қабылдадыңыз деп есептейміз.</string>
 </resources>

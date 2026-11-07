@@ -13,26 +13,29 @@
  */
 package com.simplified.wsstatussaver.fragments.messageview
 
-import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import androidx.core.app.ShareCompat
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialFadeThrough
+import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager
+import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils
 import com.simplified.wsstatussaver.R
 import com.simplified.wsstatussaver.WhatSaveViewModel
 import com.simplified.wsstatussaver.adapter.MessageAdapter
 import com.simplified.wsstatussaver.database.Conversation
 import com.simplified.wsstatussaver.database.MessageEntity
 import com.simplified.wsstatussaver.databinding.FragmentMessagesBinding
+import com.simplified.wsstatussaver.extensions.applyBottomWindowInsets
 import com.simplified.wsstatussaver.extensions.startActivitySafe
-import com.simplified.wsstatussaver.extensions.toChooser
 import com.simplified.wsstatussaver.fragments.base.BaseFragment
 import com.simplified.wsstatussaver.interfaces.IMessageCallback
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -45,6 +48,8 @@ class ConversationDetailFragment : BaseFragment(R.layout.fragment_messages), IMe
     private var _binding: FragmentMessagesBinding? = null
     private val binding get() = _binding!!
     private var adapter: MessageAdapter? = null
+    private var swipeManager: RecyclerViewSwipeManager? = null
+    private var wrappedAdapter: RecyclerView.Adapter<*>? = null
 
     private val conversation: Conversation
         get() = arguments.extraConversation
@@ -52,6 +57,8 @@ class ConversationDetailFragment : BaseFragment(R.layout.fragment_messages), IMe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMessagesBinding.bind(view)
+        binding.recyclerView.applyBottomWindowInsets()
+
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
         enterTransition = MaterialFadeThrough().addTarget(view)
@@ -72,8 +79,13 @@ class ConversationDetailFragment : BaseFragment(R.layout.fragment_messages), IMe
 
     private fun setupRecyclerView() {
         adapter = MessageAdapter(requireContext(), arrayListOf(), this)
+        swipeManager = RecyclerViewSwipeManager().also {
+            wrappedAdapter = it.createWrappedAdapter(adapter!!)
+        }
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = adapter
+        binding.recyclerView.adapter = wrappedAdapter
+        binding.recyclerView.itemAnimator = RefactoredDefaultItemAnimator()
+        swipeManager!!.attachRecyclerView(binding.recyclerView)
     }
 
     private fun data(messages: List<MessageEntity>) {
@@ -83,29 +95,45 @@ class ConversationDetailFragment : BaseFragment(R.layout.fragment_messages), IMe
         }
     }
 
-    override fun messageClick(message: MessageEntity) {
+    private fun sendText(content: String) {
         startActivitySafe(
-            Intent(Intent.ACTION_SEND)
+            ShareCompat.IntentBuilder(requireContext())
                 .setType("text/plain")
-                .putExtra(Intent.EXTRA_TEXT, message.content)
-                .toChooser(getString(R.string.share_with))
+                .setText(content)
+                .setChooserTitle(R.string.share_with)
+                .createChooserIntent()
         )
     }
 
-    override fun messageLongClick(message: MessageEntity) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.delete_message_title)
-            .setMessage(R.string.delete_message_confirmation)
-            .setPositiveButton(R.string.yes_action) { _: DialogInterface, _: Int ->
-                viewModel.deleteMessage(message)
+    override fun messageClick(message: MessageEntity) {
+        sendText(message.content)
+    }
+
+    override fun messageSwiped(message: MessageEntity) {
+        viewModel.deleteMessage(message)
+    }
+
+    override fun messageMultiSelectionClick(item: MenuItem, selection: List<MessageEntity>) {
+        when (item.itemId) {
+            R.id.action_delete -> {
+                viewModel.deleteMessages(selection)
             }
-            .setNegativeButton(R.string.no_action, null)
-            .show()
+        }
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         super.onCreateMenu(menu, menuInflater)
         menu.removeItem(R.id.action_settings)
-        menu.removeItem(R.id.action_about)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.recyclerView.itemAnimator = null
+        binding.recyclerView.layoutManager = null
+        swipeManager?.release()
+        swipeManager = null
+        WrapperAdapterUtils.releaseAll(wrappedAdapter)
+        wrappedAdapter = null
+        adapter = null
     }
 }

@@ -19,20 +19,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:background="?selectableItemBackground">
+    android:paddingTop="@dimen/m3_list_padding_vertical"
+    android:paddingBottom="@dimen/m3_list_padding_vertical"
+    android:paddingStart="@dimen/m3_list_padding_horizontal"
+    android:paddingEnd="@dimen/m3_list_padding_horizontal"
+    android:background="?rectSelector">
 
-    <com.simplified.wsstatussaver.views.IconImageView
+    <ImageView
         android:id="@+id/icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:scaleType="fitCenter"
-        android:padding="8dp"
-        app:tint="?colorControlNormal"
-        app:iconViewColor="?iconColor"
+        android:layout_width="@dimen/m3_list_icon_size"
+        android:layout_height="@dimen/m3_list_icon_size"
+        android:importantForAccessibility="no"
+        android:scaleType="center"
+        app:tint="?colorOnSurfaceVariant"
+        app:srcCompat="@drawable/ic_person_24dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:src="@drawable/ic_round_message_24dp"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/title"
@@ -40,8 +42,9 @@
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:ellipsize="marquee"
-        android:layout_marginStart="16dp"
-        android:textAppearance="?textAppearanceBody1"
+        android:layout_marginStart="@dimen/m3_list_padding_horizontal"
+        android:textAlignment="viewStart"
+        android:textAppearance="?textAppearanceTitleMedium"
         app:layout_constraintTop_toTopOf="@+id/icon"
         app:layout_constraintStart_toEndOf="@+id/icon"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,8 +54,11 @@
         android:id="@+id/description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:ellipsize="end"
-        android:textAppearance="?textAppearanceBody2"
+        android:textAlignment="viewStart"
+        android:textAppearance="?textAppearanceBodyMedium"
+        android:textColor="?android:textColorSecondary"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintEnd_toEndOf="@+id/title"
