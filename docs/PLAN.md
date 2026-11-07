@@ -11,9 +11,9 @@ It is a fork of **WhatSave** by Christians Martínez A. ([@mardous](https://gith
 | Base code | WhatSave **2.1.0-beta.3** (March 2025, from the Wayback Machine archive of the GitHub tag tarball), placed on top of the original 263-commit history (v1.2.5) |
 | License | GPL-3.0, keep all original copyright headers, credit the original author in README and About |
 | Distribution | Open-source channels only: GitHub Releases → IzzyOnDroid → F-Droid. **No Google Play.** |
-| Stack | Keep the existing one: Kotlin, XML views + View Binding, Navigation, Room, Koin, Glide, Media3, coroutines |
+| Stack | Keep the existing one: Kotlin, XML views + View Binding, Navigation, Room, Koin, Coil, Media3, coroutines |
 | Deleted-message catcher | Keep, but **opt-in**, local-only, with retention limits |
-| Network | Goal: **no `INTERNET` permission at all** |
+| Network | **No `INTERNET` permission** (done in Phase 1) |
 
 ## What the base already has (2.1.0-beta.3)
 
@@ -43,34 +43,42 @@ Things to remove or fix: Firebase Analytics/Crashlytics (`normal` flavor), the K
 - [x] Lay 2.1.0-beta.3 over the history
 - [x] Commit the import and push it
 - [x] Rewrite the README and credit the original author
-- [x] Confirm it builds (`./gradlew assembleFdroidDebug`) before changing anything
+- [x] Confirm it builds (`./gradlew assembleFdroidDebug`, now `assembleDebug`) before changing anything
   (2026-11-07: builds cleanly with JDK 21, AGP 8.8.2, Gradle 8.10.2; 14 MB APK, no Firebase classes;
   still has `INTERNET` and `ACCESS_NETWORK_STATE`, as expected before Phase 1)
 - [ ] Install on a phone and check that statuses load (no device connected during the build check)
 
 ## Phase 1: Rebrand and de-Google (v1.0.0, feature parity)
 
+Done on 2026-11-07 unless marked open.
+
 1. **Identity**
-   - New `applicationId` (proposal: `io.github.striderape.whatstash`); keep the Kotlin package/namespace for now to keep the diff small (rename later if wanted)
-   - App name "WhatStash" everywhere, new launcher icon + monochrome themed icon
-   - Version: start at 1.0.0 with a fresh versionCode scheme
+   - [x] `applicationId` `io.github.striderape.whatstash`; Kotlin package/namespace kept as `com.simplified.wsstatussaver` to keep the diff small
+   - [x] App name "WhatStash" in the label, APK name and user-facing strings (all locales)
+   - [x] New vector launcher icon with a monochrome (themed) layer; vector legacy icons for Android 7.x; new F-Droid icon
+   - [x] Version 1.0.0 (versionCode 1000)
 2. **Remove tracking and networking**
-   - Delete the `normal` flavor, Firebase plugins/libraries, `google-services.json` CI steps, and the analytics stubs in `FirebaseApp.kt`
-   - Delete the update checker (`update/`, `network/KtorClient.kt`, Ktor and versioncompare libraries)
-   - Remove `INTERNET` and `ACCESS_NETWORK_STATE`; check that the "chat without saving" tool still works (it only fires an intent)
+   - [x] Firebase Analytics/Crashlytics, both product flavors, the analytics setting and its strings
+   - [x] Update checker (`update/`, `network/KtorClient.kt`, update dialog, Ktor, versioncompare) and its settings
+   - [x] `INTERNET` and `ACCESS_NETWORK_STATE` removed (the latter is stripped from Media3's manifest with `tools:node="remove"`)
+   - [ ] Check on a device that "chat without saving" and video playback still work without network permissions
 3. **Toolchain**
-   - Bump AGP, Gradle, Kotlin, KSP, AndroidX, Media3, Room, Koin to current stable versions
-   - targetSdk/compileSdk to the latest stable API level; keep minSdk 24 unless something forces a change
+   - [x] Gradle 9.9.0, AGP 9.5.1 (built-in Kotlin), Kotlin 2.4.21, KSP 2.3.13, current AndroidX/Media3/Room/Koin/Coil
+   - [x] compileSdk 37, targetSdk 36, minSdk 24
 4. **Docs and credits**
-   - New README (features, screenshots, "Based on WhatSave by Christians Martínez A.")
-   - About screen: original author credit + link to this repo; keep `LICENSE.md`
-   - Update `metadata/` (fastlane) texts for F-Droid
+   - [x] README (English and Spanish) with a Credits section
+   - [x] About screen credits Christians Martínez A. (mardous), adds the maintainer, links to this repo
+   - [x] PRIVACY.md rewritten, CONTRIBUTING.md and Code of Conduct point at this project
+   - [x] F-Droid metadata: title, descriptions, 1.0.0 changelog
 5. **CI**
-   - One workflow: lint + unit tests + `assembleRelease` on every push/PR
-   - Release workflow: signed APK from a tag, signing key stored in GitHub Secrets
+   - [x] `ci.yml`: wrapper validation, lint, debug and release builds on every push/PR to `main`
+   - [x] `release.yml`: signed APK and GitHub release from a `v*` tag, keystore from repository secrets
+   - [ ] Add the signing secrets (`KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`) before the first release
+   - [ ] Unit tests (there are none yet)
 6. **Verification**
-   - Real device or emulator on Android 11+ and on Android 10 or older
-   - WhatsApp and WhatsApp Business, images and videos, save/share/delete, catcher opt-in
+   - [ ] Real device or emulator on Android 11+ and on Android 10 or older
+   - [ ] WhatsApp and WhatsApp Business, images and videos, save/share/delete, catcher opt-in
+   - [ ] Release build on a device (R8 now runs with full optimization)
 
 ## Phase 2: Better than the original (v1.1)
 
@@ -101,8 +109,8 @@ Things to remove or fix: Firebase Analytics/Crashlytics (`normal` flavor), the K
 3. F-Droid main repo: metadata merge request, aim for reproducible builds
 4. Optional: own Weblate project for translations
 
-## Open questions
+## Settled questions
 
-- Final `applicationId`
-- Keep OGWhatsApp support (a modded client) or drop it?
-- Version scheme: 1.0.0 fresh, or continue from 2.x to signal the lineage?
+- `applicationId`: `io.github.striderape.whatstash`
+- OGWhatsApp support: kept
+- Version scheme: fresh start at 1.0.0
