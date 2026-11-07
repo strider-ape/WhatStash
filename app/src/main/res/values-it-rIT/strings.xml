@@ -19,7 +19,7 @@
     <string name="share_action">Condividere</string>
     <string name="share_with">Condividi con…</string>
     <string name="share_app">Condividi app</string>
-    <string name="app_share">Ti invito a provare questa interessante app: WhatSave. Scaricalo qui: %s</string>
+    <string name="app_share">Ti invito a provare questa interessante app: WhatStash. Scaricalo qui: %s</string>
     <string name="open_action">Aprire</string>
     <string name="more_label">Di più</string>
     <string name="home_label">Stati</string>
@@ -98,8 +98,8 @@
     <string name="message_view_term_1">Questa funzione legge il contenuto delle notifiche WhatsApp per salvare i messaggi ricevuti.</string>
     <string name="message_view_term_2">Pertanto, è necessaria l\'autorizzazione per accedere alle notifiche affinché funzioni correttamente.</string>
     <string name="message_view_term_3">Saranno elaborate solo le notifiche WhatsApp. I messaggi vengono salvati solo su questo dispositivo.</string>
-    <string name="message_view_term_4">I messaggi inviati e eliminati dai tuoi contatti mentre sei offline non vengono salvati da WhatSave perché il tuo telefono non riceverà una notifica WhatsApp.</string>
-    <string name="message_view_term_5">Ricorda che WhatSave è un\'app open source, quindi puoi sempre esaminarne il funzionamento interno per garantire che la tua privacy non sia compromessa.</string>
+    <string name="message_view_term_4">I messaggi inviati e eliminati dai tuoi contatti mentre sei offline non vengono salvati da WhatStash perché il tuo telefono non riceverà una notifica WhatsApp.</string>
+    <string name="message_view_term_5">Ricorda che WhatStash è un\'app open source, quindi puoi sempre esaminarne il funzionamento interno per garantire che la tua privacy non sia compromessa.</string>
     <string name="use_message_view">Usa la visualizzazione messaggi</string>
     <string name="disable_message_view_title">Disabilita la visualizzazione messaggi</string>
     <string name="disable_message_view_confirmation">Quando disattivi la visualizzazione messaggi, tutti i messaggi salvati qui saranno eliminati. Sei sicuro?</string>

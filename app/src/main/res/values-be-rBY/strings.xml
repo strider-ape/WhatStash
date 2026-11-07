@@ -19,7 +19,7 @@
     <string name="share_action">падзяліцца</string>
     <string name="share_with">Падзяліцца з…</string>
     <string name="share_app">Падзяліцца праграмай</string>
-    <string name="app_share">Я запрашаю вас паспрабаваць гэта цікавае прыкладанне: WhatSave. Спампуйце тут: %s</string>
+    <string name="app_share">Я запрашаю вас паспрабаваць гэта цікавае прыкладанне: WhatStash. Спампуйце тут: %s</string>
     <string name="open_action">Адкрыты</string>
     <string name="more_label">больш</string>
     <string name="home_label">Статусы</string>
@@ -98,8 +98,8 @@
     <string name="message_view_term_1">Гэта функцыя чытае змесціва паведамленняў WhatsApp для захавання атрыманых паведамленняў.</string>
     <string name="message_view_term_2">Такім чынам, для правільнай работы гэтага інструмента патрэбна дазвол на доступ да паведамленняў.</string>
     <string name="message_view_term_3">Апрацоўвацца будуць толькі паведамленні WhatsApp. Паведамленні захоўваюцца толькі на гэтым прыладзе.</string>
-    <string name="message_view_term_4">Паведамленні, якія вашыя кантакты адправілі і выдалілі, пакуль вы былі афлайн, не захоўваюцца WhatSave, бо ваш тэлефон не атрымае паведамленне WhatsApp.</string>
-    <string name="message_view_term_5">Памятайце, што WhatSave - гэта дзейнічальна адкрытае прыкладанне, і вы заўсёды можаце праверыць яго ўнутраныя механізмы, каб пераканацца, што ваша прыватнасць не паставіцца пад загрозу.</string>
+    <string name="message_view_term_4">Паведамленні, якія вашыя кантакты адправілі і выдалілі, пакуль вы былі афлайн, не захоўваюцца WhatStash, бо ваш тэлефон не атрымае паведамленне WhatsApp.</string>
+    <string name="message_view_term_5">Памятайце, што WhatStash - гэта дзейнічальна адкрытае прыкладанне, і вы заўсёды можаце праверыць яго ўнутраныя механізмы, каб пераканацца, што ваша прыватнасць не паставіцца пад загрозу.</string>
     <string name="use_message_view">Выкарыстоўваць прагляд паведамленняў</string>
     <string name="disable_message_view_title">Адключыць прагляд паведамленняў</string>
     <string name="disable_message_view_confirmation">Калі вы адключыце прагляд паведамленняў, усе захаваныя паведамленні будуць выдаленыя. Вы ўпэўненыя?</string>

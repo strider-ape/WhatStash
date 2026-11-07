@@ -19,7 +19,7 @@
     <string name="share_action">Делиться</string>
     <string name="share_with">Поделиться с…</string>
     <string name="share_app">Поделиться приложением</string>
-    <string name="app_share">Я приглашаю вас попробовать это интересное приложение: WhatSave. Загрузите его здесь: %s</string>
+    <string name="app_share">Я приглашаю вас попробовать это интересное приложение: WhatStash. Загрузите его здесь: %s</string>
     <string name="open_action">Открыть</string>
     <string name="more_label">Более</string>
     <string name="home_label">Статусы</string>
@@ -98,8 +98,8 @@
     <string name="message_view_term_1">Эта функция читает содержимое уведомлений WhatsApp для сохранения полученных сообщений.</string>
     <string name="message_view_term_2">Таким образом, для правильной работы требуется разрешение на доступ к уведомлениям.</string>
     <string name="message_view_term_3">Обрабатываются только уведомления WhatsApp. Сообщения сохраняются только на этом устройстве.</string>
-    <string name="message_view_term_4">Сообщения, которые ваши контакты отправляют и удаляют, пока вы находитесь в автономном режиме, не сохраняются WhatSave, потому что ваш телефон не получит уведомление WhatsApp.</string>
-    <string name="message_view_term_5">Помните, что WhatSave - это приложение с открытым исходным кодом, поэтому вы всегда можете изучить его внутреннее устройство, чтобы убедиться, что ваша конфиденциальность не нарушается.</string>
+    <string name="message_view_term_4">Сообщения, которые ваши контакты отправляют и удаляют, пока вы находитесь в автономном режиме, не сохраняются WhatStash, потому что ваш телефон не получит уведомление WhatsApp.</string>
+    <string name="message_view_term_5">Помните, что WhatStash - это приложение с открытым исходным кодом, поэтому вы всегда можете изучить его внутреннее устройство, чтобы убедиться, что ваша конфиденциальность не нарушается.</string>
     <string name="use_message_view">Использовать просмотр сообщений</string>
     <string name="disable_message_view_title">Отключить просмотр сообщений</string>
     <string name="disable_message_view_confirmation">Когда вы отключаете просмотр сообщений, все сохраненные здесь сообщения будут удалены. Вы уверены?</string>

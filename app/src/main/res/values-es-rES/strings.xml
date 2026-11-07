@@ -19,7 +19,7 @@
     <string name="share_action">Compartir</string>
     <string name="share_with">Compartir con…</string>
     <string name="share_app">Compartir app</string>
-    <string name="app_share">Te invito a probar esta interesante aplicación: WhatSave. Descárgalo aquí: %s</string>
+    <string name="app_share">Te invito a probar esta interesante aplicación: WhatStash. Descárgalo aquí: %s</string>
     <string name="open_action">Abrir</string>
     <string name="more_label">Más</string>
     <string name="home_label">Estados</string>
@@ -90,8 +90,8 @@
     <string name="you_wont_be_able_to_see_messages_here">Aquí no podrás ver los mensajes WhatsApp borrados o recibidos.</string>
     <string name="confirm_device_credentials">Debes confirmar tus credenciales antes de utilizar esta herramienta.</string>
     <string name="message_view_term_3">Solo se procesarán las notificaciones WhatsApp. Los mensajes se guardan solo en este dispositivo.</string>
-    <string name="message_view_term_4">Los mensajes que tus contactos envían y borran mientras estás desconectado no son guardados por WhatSave porque tu teléfono no recibirá una notificación WhatsApp.</string>
-    <string name="message_view_term_5">Recuerda que WhatSave es una aplicación de código abierto, por lo que siempre puedes revisar su funcionamiento interno para asegurarte de que tu privacidad no se vea comprometida.</string>
+    <string name="message_view_term_4">Los mensajes que tus contactos envían y borran mientras estás desconectado no son guardados por WhatStash porque tu teléfono no recibirá una notificación WhatsApp.</string>
+    <string name="message_view_term_5">Recuerda que WhatStash es una aplicación de código abierto, por lo que siempre puedes revisar su funcionamiento interno para asegurarte de que tu privacidad no se vea comprometida.</string>
     <string name="yes_action">Sí</string>
     <string name="msg_a_number">Envía un mensaje a un número</string>
     <string name="no_blacklisted_senders">Aquí se mostrará las personas de las que no quieres que sus mensajes se guarden.</string>

@@ -13,7 +13,7 @@
     <string name="share_action">Teilen</string>
     <string name="share_with">Teilen mit…</string>
     <string name="share_app">App teilen</string>
-    <string name="app_share">Ich lade dich ein, folgende interessante App auszuprobieren: WhatSave. Lade sie hier herunter: %s</string>
+    <string name="app_share">Ich lade dich ein, folgende interessante App auszuprobieren: WhatStash. Lade sie hier herunter: %s</string>
     <string name="open_action">Öffnen</string>
     <string name="home_label">Status</string>
     <string name="saved_label">Gespeichert</string>
@@ -76,8 +76,8 @@
     <string name="message_view_term_1">Diese Funktion liest den Inhalt von WhatsApp-Benachrichtigungen, um empfangene Nachrichten zu speichern.</string>
     <string name="message_view_term_2">Deshalb ist der Zugriff auf Benachrichtigungen nötig.</string>
     <string name="message_view_term_3">Nur WhatsApp-Benachrichtigungen werden verarbeitet. Die Nachrichten werden nur auf diesem Gerät gespeichert.</string>
-    <string name="message_view_term_4">Die Nachrichten, die deine Kontakte senden und löschen während du offline bist, werden nicht von WhatSave gespeichert, da dein Telefon die WhatsApp-Benachrichtigung nicht empfängt.</string>
-    <string name="message_view_term_5">WhatSave ist eine quelloffene App. Du kannst jederzeit nachschauen, wie sie im Inneren funktioniert und sicherstellen, daß deine Privatsphäre nicht verletzt wird.</string>
+    <string name="message_view_term_4">Die Nachrichten, die deine Kontakte senden und löschen während du offline bist, werden nicht von WhatStash gespeichert, da dein Telefon die WhatsApp-Benachrichtigung nicht empfängt.</string>
+    <string name="message_view_term_5">WhatStash ist eine quelloffene App. Du kannst jederzeit nachschauen, wie sie im Inneren funktioniert und sicherstellen, daß deine Privatsphäre nicht verletzt wird.</string>
     <string name="use_message_view">Nachrichtenansicht nutzen</string>
     <string name="disable_message_view_title">Nachrichtenansicht deaktivieren</string>
     <string name="disable_message_view_confirmation">Wenn du die Nachrichtenansicht deaktivierst, werden alle gespeicherten Nachrichten gelöscht. Bist du sicher?</string>

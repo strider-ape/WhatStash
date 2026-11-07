@@ -19,7 +19,7 @@
     <string name="share_action">Бөлісу</string>
     <string name="share_with">Бөлісу…</string>
     <string name="share_app">Қолданбаны бөлісу</string>
-    <string name="app_share">Мен сізді осы қызықты қолданбаны қолдануға шақырамын: WhatSave. Оны мына жерден жүктеп алыңыз: %s</string>
+    <string name="app_share">Мен сізді осы қызықты қолданбаны қолдануға шақырамын: WhatStash. Оны мына жерден жүктеп алыңыз: %s</string>
     <string name="open_action">Ашық</string>
     <string name="more_label">Көбірек</string>
     <string name="home_label">Күйлер</string>
@@ -98,8 +98,8 @@
     <string name="message_view_term_1">Бұл функция WhatsApp хабарламаларын сақтау үшін хабарламалардың мазмұнын оқиды.</string>
     <string name="message_view_term_2">Сондықтан, бұл бейінгі түрде жұмыс істеу үшін хабарламаларға кіруге рұқсат көрсетілгені керек.</string>
     <string name="message_view_term_3">Тек WhatsApp хабарламалары өңдеуліп жататылады. Хабарламалар тек бұл құрылмада сақталады.</string>
-    <string name="message_view_term_4">Сіз афлайн болдыңыз уақыттың ішінде сіздің контакттарыңыз жіберіп, жойған хабарламаларды сақтамайды WhatSave, себебі сіздің телефоныңызға WhatsApp хабарламасы келмейді.</string>
-    <string name="message_view_term_5">Қайырымды болсын, WhatSave - бұл ашық көрсеткіштік қосымша, сондықтан сіз өзге адамдардан тізімге алу үшін оның ішкі ісін шексіз шолу бола аласыз.</string>
+    <string name="message_view_term_4">Сіз афлайн болдыңыз уақыттың ішінде сіздің контакттарыңыз жіберіп, жойған хабарламаларды сақтамайды WhatStash, себебі сіздің телефоныңызға WhatsApp хабарламасы келмейді.</string>
+    <string name="message_view_term_5">Қайырымды болсын, WhatStash - бұл ашық көрсеткіштік қосымша, сондықтан сіз өзге адамдардан тізімге алу үшін оның ішкі ісін шексіз шолу бола аласыз.</string>
     <string name="use_message_view">Хабарлама көрінісін пайдалану</string>
     <string name="disable_message_view_title">Хабарлама көрінісін ажырату</string>
     <string name="disable_message_view_confirmation">Хабарлама көрінісін ажыратудан кейін бұл жерде сақталған барлық хабарламалар жойылады. Сіз сенімдісіз бе?</string>

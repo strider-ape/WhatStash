@@ -19,7 +19,7 @@
     <string name="share_action">Partager</string>
     <string name="share_with">Partager avec…</string>
     <string name="share_app">Partager l\'application</string>
-    <string name="app_share">Je vous invite à essayer cette application intéressante : WhatSave. Téléchargez-le ici: %s</string>
+    <string name="app_share">Je vous invite à essayer cette application intéressante : WhatStash. Téléchargez-le ici: %s</string>
     <string name="open_action">Ouvrir</string>
     <string name="more_label">Plus</string>
     <string name="home_label">Statuts</string>
@@ -98,8 +98,8 @@
     <string name="message_view_term_1">Cette fonction lit le contenu des notifications WhatsApp pour sauvegarder les messages reçus.</string>
     <string name="message_view_term_2">Par conséquent, une autorisation d\'accès aux notifications est nécessaire pour que cela fonctionne correctement.</string>
     <string name="message_view_term_3">Seules les notifications WhatsApp seront traitées. Les messages sont sauvegardés uniquement sur cet appareil.</string>
-    <string name="message_view_term_4">Les messages que vos contacts envoient et suppriment pendant que vous êtes hors ligne ne sont pas sauvegardés par WhatSave car votre téléphone ne recevra pas de notification WhatsApp.</string>
-    <string name="message_view_term_5">N\'oubliez pas que WhatSave est une application open source, vous pouvez donc toujours examiner son fonctionnement interne pour vous assurer que votre vie privée n\'est pas compromise.</string>
+    <string name="message_view_term_4">Les messages que vos contacts envoient et suppriment pendant que vous êtes hors ligne ne sont pas sauvegardés par WhatStash car votre téléphone ne recevra pas de notification WhatsApp.</string>
+    <string name="message_view_term_5">N\'oubliez pas que WhatStash est une application open source, vous pouvez donc toujours examiner son fonctionnement interne pour vous assurer que votre vie privée n\'est pas compromise.</string>
     <string name="use_message_view">Utiliser la vue des messages</string>
     <string name="disable_message_view_title">Désactiver la vue des messages</string>
     <string name="disable_message_view_confirmation">Lorsque vous désactivez la vue des messages, tous les messages sauvegardés ici seront supprimés. Êtes-vous sûr?</string>

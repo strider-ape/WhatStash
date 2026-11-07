@@ -19,7 +19,7 @@
     <string name="share_action">Compartilhar</string>
     <string name="share_with">Compartilhar com…</string>
     <string name="share_app">Compartilhe o aplicativo</string>
-    <string name="app_share">Convido você a experimentar este aplicativo interessante: WhatSave. Baixe aqui: %s</string>
+    <string name="app_share">Convido você a experimentar este aplicativo interessante: WhatStash. Baixe aqui: %s</string>
     <string name="open_action">Abrir</string>
     <string name="more_label">Mais</string>
     <string name="home_label">Status</string>
@@ -98,8 +98,8 @@
     <string name="message_view_term_1">Esta função lê o conteúdo das notificações do WhatsApp para salvar as mensagens recebidas.</string>
     <string name="message_view_term_2">Portanto, é necessário permissão para acessar notificações para que isso funcione corretamente.</string>
     <string name="message_view_term_3">Apenas notificações do WhatsApp serão processadas. As mensagens são salvas apenas neste dispositivo.</string>
-    <string name="message_view_term_4">As mensagens que seus contatos enviam e apagam enquanto você está offline não são salvas pelo WhatSave, pois seu telefone não receberá uma notificação do WhatsApp.</string>
-    <string name="message_view_term_5">Lembre-se de que o WhatSave é um aplicativo de código aberto, então você sempre pode revisar seu funcionamento interno para garantir que sua privacidade não seja comprometida.</string>
+    <string name="message_view_term_4">As mensagens que seus contatos enviam e apagam enquanto você está offline não são salvas pelo WhatStash, pois seu telefone não receberá uma notificação do WhatsApp.</string>
+    <string name="message_view_term_5">Lembre-se de que o WhatStash é um aplicativo de código aberto, então você sempre pode revisar seu funcionamento interno para garantir que sua privacidade não seja comprometida.</string>
     <string name="use_message_view">Usar visualização de mensagens</string>
     <string name="disable_message_view_title">Desativar visualização de mensagens</string>
     <string name="disable_message_view_confirmation">Quando você desativa a visualização de mensagens, todas as mensagens salvas aqui serão excluídas. Tem certeza?</string>

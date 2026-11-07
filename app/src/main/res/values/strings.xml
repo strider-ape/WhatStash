@@ -20,7 +20,7 @@
     <string name="share_link_action">Share link</string>
     <string name="share_with">Share with…</string>
     <string name="share_app">Share app</string>
-    <string name="app_share">I invite you to try this interesting app: WhatSave. Download it here: %s</string>
+    <string name="app_share">I invite you to try this interesting app: WhatStash. Download it here: %s</string>
     <string name="open_action">Open</string>
     <string name="more_label">More</string>
     <string name="home_label">Statuses</string>
@@ -119,8 +119,8 @@
     <string name="message_view_term_1">This function reads the content of WhatsApp notifications to save received messages.</string>
     <string name="message_view_term_2">Therefore, permission to access notifications is required for this to function properly.</string>
     <string name="message_view_term_3">Only WhatsApp notifications will be processed. The messages are saved only on this device.</string>
-    <string name="message_view_term_4">The messages that your contacts send and delete while you are offline are not saved by WhatSave because your phone won\'t receive a WhatsApp notification.</string>
-    <string name="message_view_term_5">Remember that WhatSave is an open-source app, so you can always review its internal workings to ensure your privacy is not compromised.</string>
+    <string name="message_view_term_4">The messages that your contacts send and delete while you are offline are not saved by WhatStash because your phone won\'t receive a WhatsApp notification.</string>
+    <string name="message_view_term_5">Remember that WhatStash is an open-source app, so you can always review its internal workings to ensure your privacy is not compromised.</string>
     <string name="use_message_view">Use Message view</string>
     <string name="disable_message_view_title">Disable Message view</string>
     <string name="disable_message_view_confirmation">When you deactivate Message view, all saved messages here will be deleted. Are you sure?</string>

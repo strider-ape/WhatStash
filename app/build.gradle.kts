@@ -40,11 +40,10 @@ sealed class Version(
         versionMajor * 1000 + versionMinor * 100 + versionPatch * 10 + versionBuild
 }
 
-val currentVersion: Version = Version.Beta(
-    versionMajor = 2,
-    versionMinor = 1,
-    versionPatch = 0,
-    versionBuild = 3
+val currentVersion: Version = Version.Stable(
+    versionMajor = 1,
+    versionMinor = 0,
+    versionPatch = 0
 )
 
 android {
@@ -55,7 +54,7 @@ android {
         minSdk = 24
         targetSdk = 35
 
-        applicationId = namespace
+        applicationId = "io.github.striderape.whatstash"
         versionCode = currentVersion.toVersionCode()
         versionName = currentVersion.toVersionName()
     }
@@ -87,7 +86,7 @@ android {
     applicationVariants.all {
         outputs.all {
             (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                "WhatSave-v${defaultConfig.versionName}-${name}.apk"
+                "WhatStash-v${defaultConfig.versionName}-${name}.apk"
         }
     }
     buildFeatures {

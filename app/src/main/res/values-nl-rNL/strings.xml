@@ -19,7 +19,7 @@
     <string name="share_action">Deel</string>
     <string name="share_with">Delen met…</string>
     <string name="share_app">Deel app</string>
-    <string name="app_share">Ik nodig je uit om deze interessante app te proberen: WhatSave. Download het hier: %s</string>
+    <string name="app_share">Ik nodig je uit om deze interessante app te proberen: WhatStash. Download het hier: %s</string>
     <string name="open_action">Open</string>
     <string name="more_label">Meer</string>
     <string name="home_label">Statussen</string>
@@ -98,8 +98,8 @@
     <string name="message_view_term_1">Deze functie leest de inhoud van WhatsApp-meldingen om ontvangen berichten op te slaan.</string>
     <string name="message_view_term_2">Daarom is toestemming om meldingen te openen vereist voor een goede werking.</string>
     <string name="message_view_term_3">Alleen WhatsApp-meldingen worden verwerkt. De berichten worden alleen op dit apparaat opgeslagen.</string>
-    <string name="message_view_term_4">De berichten die je contacten sturen en verwijderen terwijl je offline bent, worden niet opgeslagen door WhatSave omdat je telefoon geen WhatsApp-melding ontvangt.</string>
-    <string name="message_view_term_5">Onthoud dat WhatSave een open-source app is, dus je kunt altijd de interne werking ervan controleren om ervoor te zorgen dat je privacy niet wordt aangetast.</string>
+    <string name="message_view_term_4">De berichten die je contacten sturen en verwijderen terwijl je offline bent, worden niet opgeslagen door WhatStash omdat je telefoon geen WhatsApp-melding ontvangt.</string>
+    <string name="message_view_term_5">Onthoud dat WhatStash een open-source app is, dus je kunt altijd de interne werking ervan controleren om ervoor te zorgen dat je privacy niet wordt aangetast.</string>
     <string name="use_message_view">Gebruik Berichtweergave</string>
     <string name="disable_message_view_title">Schakel Berichtweergave uit</string>
     <string name="disable_message_view_confirmation">Wanneer je Berichtweergave uitschakelt, worden alle hier opgeslagen berichten verwijderd. Weet je het zeker?</string>

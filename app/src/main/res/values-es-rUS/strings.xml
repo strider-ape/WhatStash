@@ -20,7 +20,7 @@
     <string name="share_link_action">Compartir enlace</string>
     <string name="share_with">Compartir con…</string>
     <string name="share_app">Compartir app</string>
-    <string name="app_share">Te invito a probar esta interesante aplicación: WhatSave. Descárgalo aquí: %s</string>
+    <string name="app_share">Te invito a probar esta interesante aplicación: WhatStash. Descárgalo aquí: %s</string>
     <string name="open_action">Abrir</string>
     <string name="more_label">Más</string>
     <string name="home_label">Estados</string>
@@ -117,7 +117,7 @@
     <string name="message_view_term_2">Por lo tanto, se requiere el permiso de acceso a las notificaciones.</string>
     <string name="message_view_term_3">Solo las notificaciones emitidas por WhatsApp serán procesadas. Los mensajes se guardarán solo en este dispositivo.</string>
     <string name="message_view_term_4">Los mensajes que sus contactos le envíen mientras esté desconectado no serán guardados, ya que el dispositivo no llegará a recibir una notificación de WhatsApp.</string>
-    <string name="message_view_term_5">Recuerde que WhatSave es de código abierto, por lo que siempre puede revisar su funcionamiento interno para comprobar que su privacidad no se ve comprometida.</string>
+    <string name="message_view_term_5">Recuerde que WhatStash es de código abierto, por lo que siempre puede revisar su funcionamiento interno para comprobar que su privacidad no se ve comprometida.</string>
     <string name="use_message_view">Usar Vista rápida</string>
     <string name="disable_message_view_title">Desactivar Vista rápida</string>
     <string name="disable_message_view_confirmation">Al desactivar Vista rápida, todos los mensajes guardados serán eliminados. ¿Continuar?</string>

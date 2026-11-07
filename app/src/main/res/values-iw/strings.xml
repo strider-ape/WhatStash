@@ -7,7 +7,7 @@
     <string name="share_link_action">שתף קישור</string>
     <string name="share_with">שתף באמצעות…</string>
     <string name="share_app">שתף אפליקציה</string>
-    <string name="app_share">מזמין אותך לנסות את האפליקציה המעניינת הזו: (שומר סטטוסים) WhatSave. קישור להורדה: %s</string>
+    <string name="app_share">מזמין אותך לנסות את האפליקציה המעניינת הזו: (שומר סטטוסים) WhatStash. קישור להורדה: %s</string>
     <string name="more_label">עוד</string>
     <string name="home_label">סטטוסים</string>
     <string name="saved_label">נשמר</string>
@@ -166,8 +166,8 @@
     <string name="privacy_and_terms_summary">עיין במדיניות הפרטיות ובתנאי השימוש שלנו.</string>
     <string name="confirm_device_credentials">עליך לאמת את האישורים שלך לפני השימוש בכלי זה.</string>
     <string name="message_view_term_1">פונקציה זו קוראת את התוכן של התראות ווטסאפ כדי לשמור הודעות שהתקבלו.</string>
-    <string name="message_view_term_4">ההודעות שאנשי הקשר שלך שולחים ומוחקים בזמן שאתה במצב לא מקוון לא נשמרות על ידי WhatSave מכיוון שהטלפון שלך לא יקבל התראת ווטסאפ.</string>
-    <string name="message_view_term_5">זכור ש-WhatSave היא אפליקציית קוד פתוח, כך שאתה תמיד יכול לסקור את פעולתה הפנימית כדי להבטיח שהפרטיות שלך לא תיפגע.</string>
+    <string name="message_view_term_4">ההודעות שאנשי הקשר שלך שולחים ומוחקים בזמן שאתה במצב לא מקוון לא נשמרות על ידי WhatStash מכיוון שהטלפון שלך לא יקבל התראת ווטסאפ.</string>
+    <string name="message_view_term_5">זכור ש-WhatStash היא אפליקציית קוד פתוח, כך שאתה תמיד יכול לסקור את פעולתה הפנימית כדי להבטיח שהפרטיות שלך לא תיפגע.</string>
     <string name="no_action">לא</string>
     <string name="language_portuguese_brazil">פורטוגזית (ברזיל)</string>
     <string name="send_action">שלח</string>
