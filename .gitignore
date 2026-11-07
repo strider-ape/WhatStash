@@ -10,3 +10,4 @@ private.properties
 /captures
 .externalNativeBuild
 .cxx
+.kotlin/

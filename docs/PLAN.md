@@ -43,7 +43,10 @@ Things to remove or fix: Firebase Analytics/Crashlytics (`normal` flavor), the K
 - [x] Lay 2.1.0-beta.3 over the history
 - [x] Commit the import and push it
 - [x] Rewrite the README and credit the original author
-- [ ] Confirm it builds (`./gradlew assembleFdroidDebug`) before changing anything
+- [x] Confirm it builds (`./gradlew assembleFdroidDebug`) before changing anything
+  (2026-11-07: builds cleanly with JDK 21, AGP 8.8.2, Gradle 8.10.2; 14 MB APK, no Firebase classes;
+  still has `INTERNET` and `ACCESS_NETWORK_STATE`, as expected before Phase 1)
+- [ ] Install on a phone and check that statuses load (no device connected during the build check)
 
 ## Phase 1: Rebrand and de-Google (v1.0.0, feature parity)
 
