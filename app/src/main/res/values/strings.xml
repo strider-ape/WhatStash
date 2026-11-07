@@ -17,6 +17,10 @@
     <string name="close_action">Close</string>
     <string name="save_action">Save</string>
     <string name="share_action">Share</string>
+    <string name="repost_action">Repost</string>
+    <string name="save_frame_action">Save frame</string>
+    <string name="frame_saved">Frame saved</string>
+    <string name="frame_save_failed">Couldn\'t save the frame</string>
     <string name="share_link_action">Share link</string>
     <string name="share_with">Share with…</string>
     <string name="share_app">Share app</string>
@@ -41,6 +45,10 @@
     <string name="you_saved_this_status_previously">You saved this status before. Do you want to save it again?</string>
     <string name="status_unsaved">Unsaved</string>
     <string name="status_saved">Saved</string>
+    <string name="status_state_with_expiry">%1$s · %2$s</string>
+    <string name="status_hours_left">%dh left</string>
+    <string name="status_minutes_left">%dm left</string>
+    <string name="status_expired">Expired</string>
     <string name="action_select_all">Select all</string>
     <string name="x_selected">%d selected</string>
     <string name="x_is_the_default_client_now">%s is the default client now.</string>

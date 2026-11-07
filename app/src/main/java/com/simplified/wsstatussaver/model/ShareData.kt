@@ -13,6 +13,7 @@
  */
 package com.simplified.wsstatussaver.model
 
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -43,6 +44,21 @@ data class ShareData(val data: Set<Uri> = emptySet(), val mimeTypes: Set<String>
         }
         builder.intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         return builder.createChooserIntent()
+    }
+
+    /**
+     * Sends a single file straight to [packageName] (a WhatsApp client) instead of the system
+     * share sheet. WhatsApp's own picker then offers "My status" at the top, so this is the
+     * quickest way to repost a status.
+     */
+    fun createDirectIntent(packageName: String): Intent {
+        val uri = data.first()
+        return Intent(Intent.ACTION_SEND)
+            .setType(mimeType)
+            .setPackage(packageName)
+            .putExtra(Intent.EXTRA_STREAM, uri)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            .apply { clipData = ClipData.newRawUri(null, uri) }
     }
 
     companion object {

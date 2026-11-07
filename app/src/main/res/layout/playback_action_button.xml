@@ -53,6 +53,25 @@
         app:iconPadding="16dp"
         app:iconTint="@color/playback_button_text_color"
         app:layout_constraintStart_toEndOf="@+id/save"
+        app:layout_constraintEnd_toStartOf="@+id/repost"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/repost"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:text="@string/repost_action"
+        android:textColor="@color/playback_button_text_color"
+        app:icon="@drawable/ic_repost_24dp"
+        app:iconGravity="textTop"
+        app:iconPadding="16dp"
+        app:iconTint="@color/playback_button_text_color"
+        app:layout_constraintStart_toEndOf="@+id/share"
         app:layout_constraintEnd_toStartOf="@+id/delete"
         app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -71,7 +90,7 @@
         app:iconGravity="textTop"
         app:iconPadding="16dp"
         app:iconTint="@color/playback_button_text_color"
-        app:layout_constraintStart_toEndOf="@+id/share"
+        app:layout_constraintStart_toEndOf="@+id/repost"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 

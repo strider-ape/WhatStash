@@ -38,7 +38,7 @@ import com.simplified.wsstatussaver.databinding.ItemStatusBinding
 import com.simplified.wsstatussaver.extensions.StatusMenu
 import com.simplified.wsstatussaver.extensions.getClientIfInstalled
 import com.simplified.wsstatussaver.extensions.getFormattedDate
-import com.simplified.wsstatussaver.extensions.getState
+import com.simplified.wsstatussaver.extensions.getStateWithExpiry
 import com.simplified.wsstatussaver.extensions.loadImage
 import com.simplified.wsstatussaver.interfaces.IStatusCallback
 import com.simplified.wsstatussaver.model.Status
@@ -88,7 +88,7 @@ open class StatusAdapter(
 
         if (holder.state != null) {
             if (isSaveEnabled) {
-                holder.state.text = status.getState(activity)
+                holder.state.text = status.getStateWithExpiry(activity)
             } else {
                 holder.state.text = status.getFormattedDate(activity)
             }

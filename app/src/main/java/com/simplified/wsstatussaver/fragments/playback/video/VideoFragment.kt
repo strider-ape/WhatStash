@@ -34,8 +34,12 @@ import com.simplified.wsstatussaver.extensions.bumpPlaybackSpeed
 import com.simplified.wsstatussaver.extensions.playbackSpeed
 import com.simplified.wsstatussaver.extensions.preferences
 import com.simplified.wsstatussaver.extensions.resetPlaybackSpeed
+import com.simplified.wsstatussaver.extensions.showToast
 import com.simplified.wsstatussaver.fragments.playback.PlaybackChildFragment
 import com.simplified.wsstatussaver.model.PlaybackSpeed
+import com.simplified.wsstatussaver.storage.FrameSaver
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 /**
  * @author Christians M. A. (mardous)
@@ -56,6 +60,9 @@ class VideoFragment : PlaybackChildFragment(R.layout.fragment_video), Player.Lis
     override val shareButton: MaterialButton
         get() = playerView.findViewById(R.id.share)
 
+    override val repostButton: MaterialButton
+        get() = playerView.findViewById(R.id.repost)
+
     override val deleteButton: MaterialButton
         get() = playerView.findViewById(R.id.delete)
 
@@ -68,6 +75,7 @@ class VideoFragment : PlaybackChildFragment(R.layout.fragment_video), Player.Lis
         playerView.controllerShowTimeoutMs = 3000
         setupControllerInsets()
         setupSpeedButton()
+        setupSaveFrameButton()
         initPlayer()
     }
 
@@ -140,6 +148,24 @@ class VideoFragment : PlaybackChildFragment(R.layout.fragment_video), Player.Lis
         speedButton.setOnLongClickListener {
             adjustPlaybackSpeed(preferences().resetPlaybackSpeed(), showToast = true)
             true
+        }
+    }
+
+    private fun setupSaveFrameButton() {
+        val saveFrameButton = playerView.findViewById<ImageView>(R.id.save_frame_btn)
+        saveFrameButton.setOnClickListener {
+            val positionMs = player?.currentPosition ?: 0L
+            saveFrameButton.isEnabled = false
+            viewLifecycleOwner.lifecycleScope.launch {
+                val saved = FrameSaver.saveFrame(requireContext(), status.fileUri, positionMs)
+                saveFrameButton.isEnabled = true
+                if (saved) {
+                    showToast(R.string.frame_saved)
+                    viewModel.reloadAll()
+                } else {
+                    showToast(R.string.frame_save_failed)
+                }
+            }
         }
     }
 

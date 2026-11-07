@@ -39,6 +39,9 @@ class ImageFragment : PlaybackChildFragment(R.layout.fragment_image) {
     override val shareButton: MaterialButton
         get() = binding.playbackActionButton.share
 
+    override val repostButton: MaterialButton
+        get() = binding.playbackActionButton.repost
+
     override val deleteButton: MaterialButton
         get() = binding.playbackActionButton.delete
 

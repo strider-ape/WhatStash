@@ -28,6 +28,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.simplified.wsstatussaver.R
 import com.simplified.wsstatussaver.WhatSaveViewModel
 import com.simplified.wsstatussaver.extensions.createProgressDialog
+import com.simplified.wsstatussaver.extensions.getAllInstalledClients
+import com.simplified.wsstatussaver.extensions.getClientIfInstalled
+import com.simplified.wsstatussaver.extensions.getDefaultClient
 import com.simplified.wsstatussaver.extensions.hasR
 import com.simplified.wsstatussaver.extensions.launchSafe
 import com.simplified.wsstatussaver.extensions.showToast
@@ -35,6 +38,7 @@ import com.simplified.wsstatussaver.extensions.startActivitySafe
 import com.simplified.wsstatussaver.fragments.playback.PlaybackFragment.Companion.EXTRA_STATUS
 import com.simplified.wsstatussaver.model.SavedStatus
 import com.simplified.wsstatussaver.model.Status
+import com.simplified.wsstatussaver.model.WaClient
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.properties.Delegates
 
@@ -47,6 +51,7 @@ abstract class PlaybackChildFragment(layoutRes: Int) : Fragment(layoutRes), View
 
     protected abstract val saveButton: MaterialButton
     protected abstract val shareButton: MaterialButton
+    protected abstract val repostButton: MaterialButton
     protected abstract val deleteButton: MaterialButton
 
     protected var status: Status by Delegates.notNull()
@@ -78,6 +83,7 @@ abstract class PlaybackChildFragment(layoutRes: Int) : Fragment(layoutRes), View
         }
         saveButton.setOnClickListener(this)
         shareButton.setOnClickListener(this)
+        repostButton.setOnClickListener(this)
         deleteButton.setOnClickListener(this)
         deleteButton.isEnabled = (status is SavedStatus)
     }
@@ -124,6 +130,26 @@ abstract class PlaybackChildFragment(layoutRes: Int) : Fragment(layoutRes), View
                 }
             }
 
+            repostButton -> {
+                viewModel.shareStatus(status).observe(viewLifecycleOwner) { result ->
+                    repostButton.isEnabled = !result.isLoading
+                    if (result.isLoading) {
+                        progressDialog.show()
+                    } else {
+                        progressDialog.dismiss()
+                        if (result.isSuccess) {
+                            val client = findRepostClient()
+                            val intent = if (client != null) {
+                                result.data.createDirectIntent(client.packageName)
+                            } else {
+                                result.data.createIntent(requireContext())
+                            }
+                            startActivitySafe(intent)
+                        }
+                    }
+                }
+            }
+
             deleteButton -> {
                 if (hasR()) {
                     viewModel.createDeleteRequest(requireContext(), listOf(status))
@@ -151,5 +177,16 @@ abstract class PlaybackChildFragment(layoutRes: Int) : Fragment(layoutRes), View
                 }
             }
         }
+    }
+
+    /**
+     * The WhatsApp client to repost to: the one the status came from, then the default client
+     * chosen in settings, then any installed client. Null means none is installed.
+     */
+    private fun findRepostClient(): WaClient? {
+        val context = requireContext()
+        return context.getClientIfInstalled(status.clientPackage)
+            ?: context.getDefaultClient()
+            ?: context.getAllInstalledClients().firstOrNull()
     }
 }

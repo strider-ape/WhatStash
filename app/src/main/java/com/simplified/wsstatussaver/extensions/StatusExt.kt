@@ -22,6 +22,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 val fileDateFormat: DateFormat by lazy {
     SimpleDateFormat("MMM_d_yyyy_HH.mm.ss", Locale.ENGLISH)
@@ -50,6 +51,33 @@ fun getNewSaveName(type: StatusType? = null, timeMillis: Long, delta: Int): Stri
 
 fun Status.getState(context: Context): String =
     if (isSaved) context.getString(R.string.status_saved) else context.getString(R.string.status_unsaved)
+
+/** WhatsApp statuses are visible for 24 hours after they are posted. */
+private val STATUS_LIFETIME_MILLIS = TimeUnit.HOURS.toMillis(24)
+
+/**
+ * Approximate time left before this status disappears from WhatsApp, e.g. "5h left".
+ * Measured from the file's modification time, which is when it reached this device and can be
+ * later than when it was posted, so it is an upper bound. WhatsApp keeps the file for a while
+ * after the status expires; those files are labeled "Expired".
+ */
+fun Status.getExpiryLabel(context: Context, now: Long = System.currentTimeMillis()): String {
+    val remaining = STATUS_LIFETIME_MILLIS - (now - dateModified)
+    val hours = TimeUnit.MILLISECONDS.toHours(remaining)
+    return when {
+        remaining <= 0 -> context.getString(R.string.status_expired)
+        hours >= 1 -> context.getString(R.string.status_hours_left, hours)
+        else -> context.getString(
+            R.string.status_minutes_left,
+            TimeUnit.MILLISECONDS.toMinutes(remaining).coerceAtLeast(1)
+        )
+    }
+}
+
+/** Tile label: "Saved", or "Unsaved · 5h left" for statuses that have not been saved yet. */
+fun Status.getStateWithExpiry(context: Context): String =
+    if (isSaved) getState(context)
+    else context.getString(R.string.status_state_with_expiry, getState(context), getExpiryLabel(context))
 
 fun StatusType.acceptFileName(fileName: String): Boolean = !fileName.startsWith(".") && fileName.endsWith(this.format)
 
