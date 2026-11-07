@@ -169,8 +169,7 @@ dependencies {
     implementation(libs.coil.video)
 
     implementation(libs.photoview)
-    implementation(libs.bundles.ktor)
-    implementation(libs.versioncompare)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.libphonenumber)
     implementation(libs.prettytime)
     implementation(libs.advrecyclerview)

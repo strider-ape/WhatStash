@@ -89,27 +89,12 @@ fun SharedPreferences.isWhatsappIcon() = getBoolean(PREFERENCE_WHATSAPP_ICON, fa
 
 fun SharedPreferences.isQuickDeletion() = getBoolean(PREFERENCE_QUICK_DELETION, false)
 
-fun SharedPreferences.getUpdateSearchMode() = getString(PREFERENCE_UPDATE_SEARCH_MODE, appStr(R.string.auto_update_policy))
-
-fun SharedPreferences.isUpdateOnlyWifi() = getBoolean(PREFERENCE_UPDATE_ONLY_WIFI, false)
 
 
 var SharedPreferences.isShownOnboard: Boolean
     get() = getBoolean(SHOULD_SHOW_ONBOARD, true)
     set(value) = edit {
         putBoolean(SHOULD_SHOW_ONBOARD, value)
-    }
-
-var SharedPreferences.lastUpdateSearch: Long
-    get() = getLong(PREFERENCE_LAST_UPDATE_SEARCH, -1)
-    set(value) = edit {
-        putLong(PREFERENCE_LAST_UPDATE_SEARCH, value)
-    }
-
-var SharedPreferences.lastUpdateId: Long
-    get() = getLong(PREFERENCE_LAST_UPDATE_ID, -1)
-    set(value) = edit {
-        putLong(PREFERENCE_LAST_UPDATE_ID, value)
     }
 
 var SharedPreferences.defaultClientPackageName: String?
@@ -156,16 +141,6 @@ class NightMode {
     }
 }
 
-class UpdateSearchMode {
-    companion object {
-        const val EVERY_DAY = "every_day"
-        const val WEEKLY = "weekly"
-        const val EVERY_FIFTEEN_DAYS = "every_fifteen_days"
-        const val MONTHLY = "monthly"
-        const val NEVER = "never"
-    }
-}
-
 const val SHOULD_SHOW_ONBOARD = "should_show_onboard"
 const val PREFERENCE_USE_CUSTOM_FONT = "use_custom_font"
 const val PREFERENCE_THEME_MODE = "theme_mode"
@@ -178,10 +153,6 @@ const val PREFERENCE_SAVE_LOCATION = "preferred_save_location"
 const val PREFERENCE_QUICK_DELETION = "quick_deletion"
 const val PREFERENCE_DEFAULT_CLIENT = "default_client"
 const val PREFERENCE_GRANT_PERMISSIONS = "grant_permissions"
-const val PREFERENCE_UPDATE_SEARCH_MODE = "update_search_mode"
-const val PREFERENCE_UPDATE_ONLY_WIFI = "update_only_wifi"
-const val PREFERENCE_LAST_UPDATE_SEARCH = "last_update_search"
-const val PREFERENCE_LAST_UPDATE_ID = "last_update_id"
 const val BLACKLISTED_MESSAGE_SENDERS = "blacklisted_message_senders"
 const val PREFERENCE_ENABLE_MESSAGE_VIEW = "enable_message_view"
 const val PREFERENCE_PLAYBACK_SPEED = "playback_speed"

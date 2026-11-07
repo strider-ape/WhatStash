@@ -21,8 +21,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -98,17 +96,6 @@ fun Context.openSettings(action: String, packageName: String? = this.packageName
         intent.data = Uri.fromParts("package", packageName, null)
     }
     startActivitySafe(intent)
-}
-
-fun Context.isOnline(requestOnlyWifi: Boolean): Boolean {
-    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val networkCapabilities = cm.getNetworkCapabilities(cm.activeNetwork)
-    if (networkCapabilities != null) {
-        return if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-            true
-        } else networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) && !requestOnlyWifi
-    }
-    return false
 }
 
 inline fun <reified T : Parcelable> Bundle.parcelableList(key: String, clazz: KClass<T>) =

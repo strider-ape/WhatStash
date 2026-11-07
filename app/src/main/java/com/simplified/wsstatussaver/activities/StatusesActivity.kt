@@ -22,20 +22,15 @@ import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.simplified.wsstatussaver.R
-import com.simplified.wsstatussaver.WhatSaveViewModel
 import com.simplified.wsstatussaver.activities.base.BaseActivity
-import com.simplified.wsstatussaver.dialogs.UpdateDialog
 import com.simplified.wsstatussaver.extensions.getPreferredClient
 import com.simplified.wsstatussaver.extensions.whichFragment
-import com.simplified.wsstatussaver.update.isAbleToUpdate
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * @author Christians Martínez Alvarado (mardous)
  */
 class StatusesActivity : BaseActivity(), NavController.OnDestinationChangedListener {
 
-    private val viewModel by viewModel<WhatSaveViewModel>()
     private var globalNavController: NavController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,20 +40,6 @@ class StatusesActivity : BaseActivity(), NavController.OnDestinationChangedListe
         val navigationHost = whichFragment<NavHostFragment>(R.id.global_container)
         globalNavController = navigationHost.navController.also {
             it.addOnDestinationChangedListener(this)
-        }
-
-        if (savedInstanceState == null) {
-            searchUpdate()
-        }
-    }
-
-    private fun searchUpdate() {
-        if (isAbleToUpdate()) {
-            viewModel.getLatestUpdate().observe(this) { updateInfo ->
-                if (updateInfo.isDownloadable(this)) {
-                    UpdateDialog.create(updateInfo).show(supportFragmentManager, "UPDATE_FOUND")
-                }
-            }
         }
     }
 

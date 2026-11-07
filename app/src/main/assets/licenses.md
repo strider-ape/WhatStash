@@ -40,24 +40,6 @@
 - License: [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 - URL: [Sources](https://github.com/GetStream/photoview-android)
 - 
-### Retrofit
-
-- Author: Square, Inc.
-- License: [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-- URL: [Homepage](https://square.github.io/retrofit/) - [Sources](https://github.com/square/retrofit)
-
-### OkHttp3
-
-- Author: Square, Inc.
-- License: [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-- URL: [Homepage](https://square.github.io/okhttp/) - [Sources](https://github.com/square/okhttp)
-
-### Ktor
-
-- Author: JetBrains, Inc.
-- License: [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-- URL: [Homepage](https://ktor.io) - [Sources](https://github.com/ktorio/ktor)
-
 ### koin
 
 - Author: Arnaud Giuliani
@@ -69,12 +51,6 @@
 - Author: Haruki Hasegawa
 - License: [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 - URL: [Homepage](https://advancedrecyclerview.h6ah4i.com/) - [Sources](https://github.com/h6ah4i/android-advancedrecyclerview)
-
-### Version Compare
-
-- Author: Thomas Wirth
-- License: [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-- URL: [Sources](https://github.com/G00fY2/version-compare)
 
 ### LibPhoneNumber-Android
 

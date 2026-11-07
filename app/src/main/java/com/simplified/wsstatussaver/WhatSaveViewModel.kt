@@ -13,13 +13,11 @@
  */
 package com.simplified.wsstatussaver
 
-import android.app.DownloadManager
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
-import androidx.core.content.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,7 +27,6 @@ import com.simplified.wsstatussaver.database.Conversation
 import com.simplified.wsstatussaver.database.MessageEntity
 import com.simplified.wsstatussaver.extensions.blacklistMessageSender
 import com.simplified.wsstatussaver.extensions.getAllInstalledClients
-import com.simplified.wsstatussaver.extensions.lastUpdateId
 import com.simplified.wsstatussaver.extensions.preferences
 import com.simplified.wsstatussaver.model.Country
 import com.simplified.wsstatussaver.model.Status
@@ -44,21 +41,12 @@ import com.simplified.wsstatussaver.mvvm.ShareResult
 import com.simplified.wsstatussaver.repository.Repository
 import com.simplified.wsstatussaver.storage.Storage
 import com.simplified.wsstatussaver.storage.StorageDevice
-import com.simplified.wsstatussaver.update.DEFAULT_REPO
-import com.simplified.wsstatussaver.update.DEFAULT_USER
-import com.simplified.wsstatussaver.update.GitHubRelease
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.http.isSuccess
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.util.EnumMap
 
 class WhatSaveViewModel(
     private val repository: Repository,
-    private val httpClient: HttpClient,
     private val storage: Storage
 ) : ViewModel() {
 
@@ -233,29 +221,6 @@ class WhatSaveViewModel(
 
         emit(paths)
     }
-
-    fun getLatestUpdate(): LiveData<GitHubRelease> = liveData(IO + SilentHandler) {
-        val result = httpClient.get("https://api.github.com/repos/$DEFAULT_USER/$DEFAULT_REPO/releases/latest")
-        if (result.status.isSuccess()) {
-            emit(result.body())
-        }
-    }
-
-    fun downloadUpdate(context: Context, release: GitHubRelease) = viewModelScope.launch(IO + SilentHandler) {
-        val downloadRequest = release.getDownloadRequest(context)
-        if (downloadRequest != null) {
-            val downloadManager = context.getSystemService<DownloadManager>()
-            if (downloadManager != null) {
-                val lastUpdateId = context.preferences().lastUpdateId
-                if (lastUpdateId != -1L) {
-                    downloadManager.remove(lastUpdateId)
-                }
-                context.preferences().lastUpdateId = downloadManager.enqueue(downloadRequest)
-            }
-        }
-    }
-
-    private val SilentHandler = CoroutineExceptionHandler { _, _ -> }
 }
 
 internal typealias StatusesLiveData = MutableLiveData<StatusQueryResult>

@@ -14,8 +14,11 @@
     <uses-permission
         android:name="android.permission.READ_MEDIA_VIDEO"
         android:maxSdkVersion="33" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Media3 ExoPlayer requests this for network streaming. WhatStash only plays local files. -->
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"
+        tools:node="remove" />
 
     <application
         android:allowBackup="@bool/allowBackup"

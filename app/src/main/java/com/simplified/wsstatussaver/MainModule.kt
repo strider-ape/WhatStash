@@ -16,7 +16,6 @@ package com.simplified.wsstatussaver
 import androidx.room.Room
 import com.simplified.wsstatussaver.database.MIGRATION_1_2
 import com.simplified.wsstatussaver.database.StatusDatabase
-import com.simplified.wsstatussaver.network.ktorHttpClient
 import com.simplified.wsstatussaver.repository.CountryRepository
 import com.simplified.wsstatussaver.repository.CountryRepositoryImpl
 import com.simplified.wsstatussaver.repository.MessageRepository
@@ -31,12 +30,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
-
-private val networkModule = module {
-    single {
-        ktorHttpClient()
-    }
-}
 
 private val dataModule = module {
     single {
@@ -83,8 +76,8 @@ private val statusesModule = module {
 
 private val viewModelModule = module {
     viewModel {
-        WhatSaveViewModel(get(), get(), get())
+        WhatSaveViewModel(get(), get())
     }
 }
 
-val appModules = listOf(networkModule, dataModule, managerModule, statusesModule, viewModelModule)
+val appModules = listOf(dataModule, managerModule, statusesModule, viewModelModule)

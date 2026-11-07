@@ -109,16 +109,6 @@
     <string name="select_a_country_title">בחר מדינה</string>
     <string name="system_default">ברירת המחדל של המערכת</string>
     <string name="language_name">שפה</string>
-    <string name="auto_update_title">חיפוש עידכון אוטומטי</string>
-    <string name="every_day">כל יום</string>
-    <string name="weekly">שבועי</string>
-    <string name="monthly">חודשי</string>
-    <string name="never">אף פעם לא</string>
-    <string name="only_wifi_summary">חפש עדכונים רק כאשר Wi-Fi מחובר.</string>
-    <string name="only_wifi_title">רק וואי-פי</string>
-    <string name="the_app_is_up_to_date">האפליקציה מעודכנת</string>
-    <string name="update_title">עידכון זמין</string>
-    <string name="download_action">הורדה</string>
     <string name="storage_access_title">גישה לאחסון</string>
     <string name="storage_access_description">הרשאת הגישה לאחסון חיונית לטעינה ושמירת סטטוסים.</string>
     <string name="permission_granted">ההרשאה ניתנה</string>
@@ -182,10 +172,7 @@
     <string name="language_portuguese_brazil">פורטוגזית (ברזיל)</string>
     <string name="send_action">שלח</string>
     <string name="select_the_correct_location">אנא בחר את המיקום הנכון.</string>
-    <string name="every_fifteen_days">כל חמישה עשר יום</string>
-    <string name="more_info_action">מידע נוסף.</string>
     <string name="msg_a_number_description">התחל שיחה עם מישהו שאינו ברשימת אנשי הקשר שלך, באמצעות מספר הטלפון שלו.</string>
-    <string name="downloading_update">מוריד עדכון WhatSave</string>
     <string name="storage_permission_label">עליך להעניק את ההרשאות הנדרשות הבאות לפני שתמשיך:</string>
     <string name="blacklisted_senders">שולחים ברשימה השחורה</string>
     <string name="language_arabic">ערבית</string>
