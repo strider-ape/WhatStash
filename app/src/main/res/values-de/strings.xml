@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="about_summary">Version, Links, Kontakt.</string>
+    <string name="about_summary">Version, Mitwirkende und Links.</string>
     <string name="version_x">Version %s</string>
     <string name="fork_on_github_title">Auf Github forken</string>
     <string name="oss_licenses_title">Open-Source-Lizenzen</string>

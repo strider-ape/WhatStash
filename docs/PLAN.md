@@ -61,7 +61,8 @@ Done on 2026-11-07 unless marked open.
    - [x] Firebase Analytics/Crashlytics, both product flavors, the analytics setting and its strings
    - [x] Update checker (`update/`, `network/KtorClient.kt`, update dialog, Ktor, versioncompare) and its settings
    - [x] `INTERNET` and `ACCESS_NETWORK_STATE` removed (the latter is stripped from Media3's manifest with `tools:node="remove"`)
-   - [ ] Check on a device that "chat without saving" and video playback still work without network permissions
+   - [x] Video playback works without network permissions (tested on a device, 2026-11-07)
+   - [x] "Message a number" opens and its country list loads; Send was not pressed (it opens a real WhatsApp chat)
 3. **Toolchain**
    - [x] Gradle 9.9.0, AGP 9.5.1 (built-in Kotlin), Kotlin 2.4.21, KSP 2.3.13, current AndroidX/Media3/Room/Koin/Coil
    - [x] compileSdk 37, targetSdk 36, minSdk 24
@@ -75,10 +76,15 @@ Done on 2026-11-07 unless marked open.
    - [x] `release.yml`: signed APK and GitHub release from a `v*` tag, keystore from repository secrets
    - [ ] Add the signing secrets (`KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`) before the first release
    - [ ] Unit tests (there are none yet)
-6. **Verification**
-   - [ ] Real device or emulator on Android 11+ and on Android 10 or older
-   - [ ] WhatsApp and WhatsApp Business, images and videos, save/share/delete, catcher opt-in
-   - [ ] Release build on a device (R8 now runs with full optimization)
+6. **Verification** (Motorola edge 30, Android 17, 2026-11-07)
+   - [x] Debug and release builds install, launch and grant folder access through the system picker
+   - [x] Statuses load (8 images), image viewer, save, delete with the system confirmation, Saved tab
+   - [x] Video player, landscape layout, Settings, About credits and licenses dialog; no crashes or app errors in logcat
+   - [x] Deleted-message recovery shows its opt-in terms; notification access was not granted during the test
+   - [x] Launcher icon sits next to WhatsApp in the app drawer
+   - [ ] Android 10 or older, WhatsApp Business, and real video statuses (none were available)
+   - [ ] Minor: the folder picker opens at the storage root on first use instead of Android/media
+   - [ ] Minor: a freshly saved status shows "Jan 1, 1970" in the Saved tab until the list is refreshed
 
 ## Phase 2: Better than the original (v1.1)
 

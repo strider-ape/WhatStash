@@ -92,7 +92,7 @@
     <string name="default_client_title">Default client</string>
     <string name="default_client_summary">If you have WhatsApp and Business on your device, you can pick which one to get statuses from.</string>
     <string name="about_title">About</string>
-    <string name="about_summary">Version, links, contact.</string>
+    <string name="about_summary">Version, credits and links.</string>
     <string name="version_x">Version %s</string>
     <string name="original_author_title">Original author (WhatSave)</string>
     <string name="maintainer_title">Maintainer</string>

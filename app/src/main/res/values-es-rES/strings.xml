@@ -141,7 +141,7 @@
     <string name="latest_release_summary">Ver la última versión de la aplicación y los cambios recientes.</string>
     <string name="report_bugs_title">Informar errores</string>
     <string name="report_bugs_summary">Abrir la página de seguimiento de problemas en GitHub.</string>
-    <string name="about_summary">Versión, enlaces, contacto.</string>
+    <string name="about_summary">Versión, créditos y enlaces.</string>
     <string name="save_location_title">Ubicación de guardado</string>
     <string name="always_save_in_dcim_title">Guardar siempre en DCIM</string>
     <string name="always_save_in_dcim_summary">Todos los archivos guardados se almacenan en la misma ubicación que las fotos de la cámara.</string>
