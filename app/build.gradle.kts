@@ -1,8 +1,8 @@
 import java.util.Properties
 
 plugins {
+    // AGP 9 compiles Kotlin itself (built-in Kotlin), so the kotlin-android plugin is not applied here.
     alias(libs.plugins.agp)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-parcelize")
     alias(libs.plugins.google.ksp)
@@ -47,12 +47,12 @@ val currentVersion: Version = Version.Stable(
 )
 
 android {
-    compileSdk = 35
+    compileSdk = 37
     namespace = "com.simplified.wsstatussaver"
 
     defaultConfig {
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
 
         applicationId = "io.github.striderape.whatstash"
         versionCode = currentVersion.toVersionCode()
@@ -74,19 +74,13 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = releaseSigning
         }
         debug {
             versionNameSuffix = " DEBUG"
             applicationIdSuffix = ".debug"
             signingConfig = releaseSigning
-        }
-    }
-    applicationVariants.all {
-        outputs.all {
-            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                "WhatStash-v${defaultConfig.versionName}-${name}.apk"
         }
     }
     buildFeatures {
@@ -105,17 +99,22 @@ android {
         abortOnError = true
         warning += listOf("ImpliedQuantity", "Instantiatable", "MissingQuantity", "MissingTranslation")
     }
-    kotlinOptions {
-        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-    }
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
     }
 }
 
+// APKs are named WhatStash-v<version>-<buildType>.apk
+base {
+    archivesName = "WhatStash-v${currentVersion.toVersionName()}"
+}
+
 kotlin {
     jvmToolchain(21)
+    compilerOptions {
+        optIn.add("kotlin.RequiresOptIn")
+    }
 }
 
 fun getProperties(fileName: String): Properties? {
@@ -153,6 +152,7 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.loader)
+    implementation(libs.androidx.documentfile)
     implementation(libs.androidx.cardview)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.viewpager2)

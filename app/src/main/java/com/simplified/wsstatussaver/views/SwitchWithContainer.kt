@@ -56,7 +56,7 @@ class SwitchWithContainer @JvmOverloads constructor(context: Context, attrs: Att
         this.onCheckedChangedListener = listener
     }
 
-    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+    override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
         cardView?.isChecked = isChecked
         onCheckedChangedListener?.onCheckedChanged(buttonView, isChecked)
     }
