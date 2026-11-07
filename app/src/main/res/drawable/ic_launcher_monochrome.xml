@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2026 WhatStash contributors
+  ~
+  ~ Licensed under the GNU General Public License v3
+  -->
+<!-- Themed (monochrome) icon: the ring and the arrow into a tray, without the solid disc. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M36.55,30.84 A29,29 0 0,1 71.45,30.84 M77.16,36.55 A29,29 0 0,1 77.16,71.45 M71.45,77.16 A29,29 0 0,1 36.55,77.16 M30.84,71.45 A29,29 0 0,1 30.84,36.55"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="5.5"
+        android:strokeLineCap="round" />
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="1.45"
+        android:scaleY="1.45"
+        android:translateY="1.5">
+        <path
+            android:pathData="M54,43 L54,56 M49,51.5 L54,56.5 L59,51.5 M46.5,57 L46.5,60.5 Q46.5,63 49,63 L59,63 Q61.5,63 61.5,60.5 L61.5,57"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3.4"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
+</vector>

@@ -4,22 +4,24 @@
   ~
   ~ Licensed under the GNU General Public License v3
   -->
-<!-- WhatStash mark: a chat bubble with a save arrow. Keep inside the 66dp adaptive icon safe zone. -->
+<!-- WhatStash mark: a segmented status ring around a disc with an arrow dropping into a tray. Keep inside the 66dp safe zone. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
     <path
-        android:pathData="M43,29 L65,29 Q76,29 76,40 L76,56 Q76,67 65,67 L50,67 L32,75 L32,40 Q32,29 43,29 Z"
+        android:pathData="M36.55,30.84 A29,29 0 0,1 71.45,30.84 M77.16,36.55 A29,29 0 0,1 77.16,71.45 M71.45,77.16 A29,29 0 0,1 36.55,77.16 M30.84,71.45 A29,29 0 0,1 30.84,36.55"
         android:strokeColor="#FFFFFF"
-        android:strokeWidth="5"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
+        android:strokeWidth="5.5"
+        android:strokeLineCap="round" />
     <path
-        android:pathData="M54,36.5 L54,55 M47,48 L54,55 L61,48"
-        android:strokeColor="#FFFFFF"
-        android:strokeWidth="5"
+        android:pathData="M54,34.5 A19.5,19.5 0 1,1 54,73.5 A19.5,19.5 0 1,1 54,34.5 Z"
+        android:fillColor="#FFFFFF" />
+    <path
+        android:pathData="M54,43 L54,56 M49,51.5 L54,56.5 L59,51.5 M46.5,57 L46.5,60.5 Q46.5,63 49,63 L59,63 Q61.5,63 61.5,60.5 L61.5,57"
+        android:strokeColor="#25D366"
+        android:strokeWidth="3.6"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
 </vector>
