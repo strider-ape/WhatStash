@@ -2,8 +2,6 @@
 androidPluginVersion = "8.8.2"
 annotation = "1.9.1"
 kspPluginVersion = "2.1.0-1.0.29"
-gmsPluginVersion = "4.4.2"
-crashlyticsPluginVersion = "3.0.3"
 kotlinVersion = "2.1.0"
 kotlinCoroutinesVersion = "1.10.1"
 constraintlayout = "2.2.1"
@@ -12,7 +10,6 @@ cardview = "1.0.0"
 appcompat = "1.7.0"
 coreSplashscreen = "1.0.1"
 coreVersion = "1.15.0"
-firebaseBom = "33.10.0"
 fragmentKtx = "1.8.6"
 libphonenumberAndroid = "8.13.52"
 lifecycleVersion = "2.8.7"
@@ -50,10 +47,6 @@ androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", versi
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
 material-components = { module = "com.google.android.material:material", version.ref = "material" }
 
-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
-firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
-
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutinesVersion" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinCoroutinesVersion" }
 
@@ -88,9 +81,6 @@ versioncompare = { module = "io.github.g00fy2:versioncompare", version.ref = "ve
 
 markdown-core = { module = "io.noties.markwon:core", version.ref = "markdown" }
 markdown-html = { module = "io.noties.markwon:html", version.ref = "markdown" }
-
-gms-plugin = { module = "com.google.gms:google-services", version.ref = "gmsPluginVersion" }
-firebase-crashlytics-plugin = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "crashlyticsPluginVersion" }
 
 [bundles]
 ktor = ["ktor-client-core", "ktor-client-okhttp", "ktor-serialization-json", "ktor-client-content-negotiation", "ktor-client-encoding"]

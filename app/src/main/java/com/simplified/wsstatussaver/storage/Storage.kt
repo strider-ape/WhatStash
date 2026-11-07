@@ -13,6 +13,7 @@
  */
 package com.simplified.wsstatussaver.storage
 
+import android.util.Log
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
@@ -24,7 +25,6 @@ import com.simplified.wsstatussaver.extensions.PREFERENCE_STATUSES_LOCATION
 import com.simplified.wsstatussaver.extensions.hasR
 import com.simplified.wsstatussaver.extensions.preferences
 import com.simplified.wsstatussaver.getApp
-import com.simplified.wsstatussaver.recordException
 import java.lang.reflect.InvocationTargetException
 
 /**
@@ -53,7 +53,7 @@ class Storage(context: Context) {
                     )
                 }
             } catch (t: Throwable) {
-                recordException(t)
+                Log.w("Storage", "Failed to list storage volumes", t)
             }
         }
     }

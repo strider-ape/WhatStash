@@ -13,6 +13,7 @@
  */
 package com.simplified.wsstatussaver.extensions
 
+import android.util.Log
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
@@ -39,8 +40,6 @@ import androidx.core.net.toUri
 import androidx.core.os.BundleCompat
 import androidx.core.text.HtmlCompat
 import com.simplified.wsstatussaver.getApp
-import com.simplified.wsstatussaver.logUrlView
-import com.simplified.wsstatussaver.recordException
 import com.simplified.wsstatussaver.service.MessageCatcherService
 import java.io.Serializable
 import java.io.UnsupportedEncodingException
@@ -56,7 +55,6 @@ typealias ViewConsumer = (View) -> Unit
 fun Context.getDrawableCompat(resId: Int) = AppCompatResources.getDrawable(this, resId)
 
 fun Context.openWeb(url: String) {
-    logUrlView(url)
     startActivitySafe(
         Intent(Intent.ACTION_VIEW, url.toUri())
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -173,7 +171,7 @@ fun <T> ActivityResultLauncher<T>.launchSafe(input: T, options: ActivityOptionsC
     try {
         launch(input, options)
     } catch (e: ActivityNotFoundException) {
-        recordException(e)
+        Log.w("AndroidExt", "No activity found for launcher", e)
     }
 }
 

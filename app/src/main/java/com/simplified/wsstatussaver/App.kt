@@ -21,7 +21,6 @@ import coil3.SingletonImageLoader
 import coil3.request.crossfade
 import coil3.video.VideoFrameDecoder
 import com.simplified.wsstatussaver.extensions.getDefaultDayNightMode
-import com.simplified.wsstatussaver.extensions.isAnalyticsEnabled
 import com.simplified.wsstatussaver.extensions.migratePreferences
 import com.simplified.wsstatussaver.extensions.packageInfo
 import com.simplified.wsstatussaver.extensions.preferences
@@ -40,9 +39,6 @@ class App : Application(), SingletonImageLoader.Factory {
         instance = this
 
         preferences().migratePreferences()
-
-        // Disable Analytics/Crashlytics for debug builds
-        setAnalyticsEnabled(preferences().isAnalyticsEnabled())
 
         startKoin {
             androidContext(this@App)
@@ -65,13 +61,11 @@ class App : Application(), SingletonImageLoader.Factory {
         get() = packageManager.packageInfo().versionName ?: "0"
 
     val fullVersionName: String
-        get() = versionName.let { if (isFDroidBuild()) "$it (F-Droid)" else it }
+        get() = versionName
 
     companion object {
         internal lateinit var instance: App
             private set
-
-        fun isFDroidBuild() = BuildConfig.FLAVOR.equals("fdroid", ignoreCase = true)
 
         fun getFileProviderAuthority(): String = instance.packageName + ".file_provider"
     }

@@ -23,7 +23,6 @@ import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
 import androidx.core.view.doOnPreDraw
 import com.google.android.material.transition.MaterialFadeThrough
-import com.simplified.wsstatussaver.App
 import com.simplified.wsstatussaver.BuildConfig
 import com.simplified.wsstatussaver.R
 import com.simplified.wsstatussaver.databinding.FragmentAboutBinding
@@ -93,12 +92,6 @@ class AboutFragment : BaseFragment(R.layout.fragment_about), View.OnClickListene
                     putExtra(Intent.EXTRA_SUBJECT, "${getString(R.string.app_name)} - Support & questions")
                 }
                 startActivity(Intent.createChooser(emailIntent, getString(R.string.contact_title)))
-            }
-
-            binding.appVersion -> {
-                if (App.isFDroidBuild()) {
-                    requireContext().openWeb(APP_FDROID_URL)
-                }
             }
 
             binding.author -> requireContext().openWeb(MARDOUS_URL)
