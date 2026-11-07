@@ -1,21 +1,26 @@
 <div align="center">
 
-# WhatSave
+# WhatStash
 
-### Una aplicación que te ayuda a guardar los estados de Whatsapp y Business de la forma más sencilla.
+### Una app de código abierto y respetuosa con tu privacidad para guardar estados de WhatsApp y WhatsApp Business.
 
 [English](README.md)
 &nbsp;&nbsp;|&nbsp;&nbsp;
 Español
 
-[![GitHub Releases](https://img.shields.io/github/v/release/mardous/WhatSave?label=GitHub%20Releases&logo=github)](https://github.com/mardous/WhatSave/releases/latest)
-[![F-Droid version](https://img.shields.io/f-droid/v/com.simplified.wsstatussaver?label=F-Droid&logo=fdroid)](https://f-droid.org/packages/com.simplified.wsstatussaver/)
-[![Platform](https://img.shields.io/badge/Platform-Android-green.svg?logo=android)](https://github.com/mardous/WhatSave)
-[![License](https://img.shields.io/github/license/mardous/WhatSave?color=blue&label=License)](https://github.com/mardous/WhatSave/blob/master/LICENSE.md)
-[![Code of Conduct](https://img.shields.io/badge/Contributor_Covenant-2.1-4baaaa.svg)](https://github.com/mardous/WhatSave/blob/master/CODE_OF_CONDUCT.md)
+[![License](https://img.shields.io/github/license/strider-ape/WhatStash?color=blue&label=License)](LICENSE.md)
+[![Platform](https://img.shields.io/badge/Platform-Android-green.svg?logo=android)](https://github.com/strider-ape/WhatStash)
+[![Status](https://img.shields.io/badge/Status-Early%20development-orange.svg)](docs/PLAN.md)
+[![Code of Conduct](https://img.shields.io/badge/Contributor_Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+
 </div>
 
-## 📱 Screenshots
+> [!NOTE]
+> WhatStash es la continuación de **[WhatSave](#-créditos)** de Christians Martínez A., cuyo repositorio
+> original y ficha en F-Droid ya no están disponibles. Estamos cambiando su marca y modernizándolo.
+> Aún no hay versión publicada; consulta el [plan del proyecto (en inglés)](docs/PLAN.md).
+
+## 📱 Capturas
 
 <div align="center">
 <div>
@@ -26,37 +31,80 @@ Español
 <img src="metadata/en-US/images/phoneScreenshots/5.jpg" width="30%" />
 <img src="metadata/en-US/images/phoneScreenshots/6.jpg" width="30%" />
 </div>
+
+<sub>Las capturas son de WhatSave 2.x, el código del que parte WhatStash. Habrá nuevas tras el cambio de marca.</sub>
 </div>
 
-## 📃 Características:
+## 🎯 Objetivos
 
-* Soporte para todas las versiones de Android desde 7.0 Nougat
-* Material You en Android 12 y superiores
-* Previsualiza y guarda archivos
-* Chat sin guardar el número
-* Recupera mensajes eliminados
-* Modo nocturno
-* Tema completamente negro
-* Sin publicidad
-* Sin marca de agua
-* ¡Es gratis!
+* **Sin publicidad, sin rastreo, sin cuentas** y, al final, sin el permiso `INTERNET`
+* **Distribución solo en canales de código abierto:** GitHub Releases, IzzyOnDroid y F-Droid (no Google Play)
+* **Aparece junto a WhatsApp** en el cajón de aplicaciones
+* Honestidad sobre lo posible: WhatsApp no guarda en el archivo quién publicó un estado, así que ninguna app puede filtrar estados por contacto
+
+## 📃 Características
+
+Heredadas de WhatSave:
+
+* Estados de WhatsApp y WhatsApp Business (imágenes y videos)
+* Vista previa con visor de imágenes y reproductor de video (con velocidad de reproducción)
+* Guardar, compartir y selección múltiple
+* Chatear con un número sin guardarlo como contacto
+* Recuperar mensajes eliminados (opcional, guardados solo en tu dispositivo)
+* Material You en Android 12+, modo nocturno y tema negro
+* Compatible con Android 7.0 Nougat y superiores
+* Sin marca de agua, gratis para siempre
+
+Previstas para WhatStash ([detalles](docs/PLAN.md)):
+
+* Cuenta regresiva de caducidad en cada estado
+* Detección de duplicados y marca de "ya guardado"
+* Volver a publicar un estado directamente en WhatsApp
+* Guardar un fotograma de un video como foto
+* Guardado automático opcional, avisos de estados nuevos, widget y acceso en Ajustes rápidos
+* Bloqueo de la app, ocultar los guardados de la galería, copia de seguridad y exportación
 
 ## ⬇️ Descargar
-Puedes descargar WhatSave desde [F-Droid](https://f-droid.org/packages/com.simplified.wsstatussaver) y también desde [GitHub Releases](https://github.com/mardous/WhatSave/releases/latest).
+
+Aún no hay versión publicada. Cuando esté lista, WhatStash se publicará en
+[GitHub Releases](https://github.com/strider-ape/WhatStash/releases) y después en IzzyOnDroid y F-Droid.
+
+## 🛠️ Compilar
+
+```bash
+git clone https://github.com/strider-ape/WhatStash.git
+cd WhatStash
+./gradlew assembleFdroidDebug
+```
+
+Las compilaciones de depuración no necesitan claves de firma ni archivos de servicios de Google.
 
 ## 🤝 Contribuciones
-Si estás interesado en contribuir a este proyecto, ¡gracias! Puedes leer [este texto (en inglés)](CONTRIBUTING.md) para obtener más detalles.
 
-Las [traducciones de esta app](https://hosted.weblate.org/projects/whatsave/) son posibles gracias a [Hosted Weblate](https://hosted.weblate.org/about/).
+Se agradecen issues y pull requests. Consulta [CONTRIBUTING (en inglés)](CONTRIBUTING.md) y el
+[plan del proyecto](docs/PLAN.md) para ver en qué se está trabajando.
 
-[![Translation status](https://hosted.weblate.org/widget/whatsave/multi-green.svg)](https://hosted.weblate.org/engage/whatsave/)
+## 🔏 Privacidad
 
-## 🔏 Privacidad y términos
-Por favor, lee [este texto (en inglés)](PRIVACY.md) si quieres saber más acerca de nuestra Política de Privacidad y Términos de Uso.
+WhatStash solo lee los archivos de estados que WhatsApp ya guardó en tu dispositivo, a través de una carpeta
+a la que tú das acceso. La analítica y el comprobador de actualizaciones heredados de WhatSave se están
+eliminando; mientras tanto, consulta [PRIVACY (en inglés)](PRIVACY.md) para ver la política original.
+
+## 🙏 Créditos
+
+WhatStash se basa en **WhatSave**, creado por **Christians Martínez A.**
+([@mardous](https://github.com/mardous)). Casi todo el código de este repositorio es obra suya, y aquí se
+conserva su historial completo de commits. Gracias por crearlo y publicarlo como software libre.
+
+Gracias también a todas las personas que tradujeron WhatSave en Hosted Weblate.
 
 ## ⚖️ Licencia
-WhatSave está licenciado bajo los términos de la [Licencia Pública General de GNU, Versión 3.0](LICENSE.md).
-Cualquier proyecto derivado debe mantener esta misma licencia por obligaciones legales.
+
+WhatStash está licenciado bajo la [Licencia Pública General de GNU, Versión 3.0](LICENSE.md), la misma
+licencia que WhatSave. Los avisos de copyright originales se mantienen en el código. Cualquier proyecto
+derivado debe mantener esta misma licencia.
 
 ## ⚠️ Aclaración
-Esta aplicación y/o su desarrollador no están relacionados de ninguna manera con otras compañias o marcas comerciales.
+
+WhatStash no está afiliado, respaldado ni relacionado con WhatsApp ni con Meta Platforms, Inc.
+WhatsApp es una marca registrada de su respectivo propietario.
