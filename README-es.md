@@ -16,11 +16,11 @@ Español
 </div>
 
 > [!NOTE]
-> WhatStash es la continuación de **[WhatSave](#-créditos)** de Christians Martínez A., cuyo repositorio
+> WhatStash es la continuación de **[WhatSave](#créditos)** de Christians Martínez A., cuyo repositorio
 > original y ficha en F-Droid ya no están disponibles. Estamos cambiando su marca y modernizándolo.
 > Aún no hay versión publicada; consulta el [plan del proyecto (en inglés)](docs/PLAN.md).
 
-## 📱 Capturas
+## Capturas
 
 <div align="center">
 <div>
@@ -35,14 +35,14 @@ Español
 <sub>Las capturas son de WhatSave 2.x, el código del que parte WhatStash. Habrá nuevas tras el cambio de marca.</sub>
 </div>
 
-## 🎯 Objetivos
+## Objetivos
 
 * **Sin publicidad, sin rastreo, sin cuentas** y, al final, sin el permiso `INTERNET`
 * **Distribución solo en canales de código abierto:** GitHub Releases, IzzyOnDroid y F-Droid (no Google Play)
 * **Aparece junto a WhatsApp** en el cajón de aplicaciones
 * Honestidad sobre lo posible: WhatsApp no guarda en el archivo quién publicó un estado, así que ninguna app puede filtrar estados por contacto
 
-## 📃 Características
+## Características
 
 Heredadas de WhatSave:
 
@@ -64,12 +64,12 @@ Previstas para WhatStash ([detalles](docs/PLAN.md)):
 * Guardado automático opcional, avisos de estados nuevos, widget y acceso en Ajustes rápidos
 * Bloqueo de la app, ocultar los guardados de la galería, copia de seguridad y exportación
 
-## ⬇️ Descargar
+## Descargar
 
 Aún no hay versión publicada. Cuando esté lista, WhatStash se publicará en
 [GitHub Releases](https://github.com/strider-ape/WhatStash/releases) y después en IzzyOnDroid y F-Droid.
 
-## 🛠️ Compilar
+## Compilar
 
 ```bash
 git clone https://github.com/strider-ape/WhatStash.git
@@ -79,18 +79,18 @@ cd WhatStash
 
 Las compilaciones de depuración no necesitan claves de firma ni archivos de servicios de Google.
 
-## 🤝 Contribuciones
+## Contribuciones
 
 Se agradecen issues y pull requests. Consulta [CONTRIBUTING (en inglés)](CONTRIBUTING.md) y el
 [plan del proyecto](docs/PLAN.md) para ver en qué se está trabajando.
 
-## 🔏 Privacidad
+## Privacidad
 
 WhatStash solo lee los archivos de estados que WhatsApp ya guardó en tu dispositivo, a través de una carpeta
 a la que tú das acceso. La analítica y el comprobador de actualizaciones heredados de WhatSave se están
 eliminando; mientras tanto, consulta [PRIVACY (en inglés)](PRIVACY.md) para ver la política original.
 
-## 🙏 Créditos
+## Créditos
 
 WhatStash se basa en **WhatSave**, creado por **Christians Martínez A.**
 ([@mardous](https://github.com/mardous)). Casi todo el código de este repositorio es obra suya, y aquí se
@@ -98,13 +98,13 @@ conserva su historial completo de commits. Gracias por crearlo y publicarlo como
 
 Gracias también a todas las personas que tradujeron WhatSave en Hosted Weblate.
 
-## ⚖️ Licencia
+## Licencia
 
 WhatStash está licenciado bajo la [Licencia Pública General de GNU, Versión 3.0](LICENSE.md), la misma
 licencia que WhatSave. Los avisos de copyright originales se mantienen en el código. Cualquier proyecto
 derivado debe mantener esta misma licencia.
 
-## ⚠️ Aclaración
+## Aclaración
 
 WhatStash no está afiliado, respaldado ni relacionado con WhatsApp ni con Meta Platforms, Inc.
 WhatsApp es una marca registrada de su respectivo propietario.

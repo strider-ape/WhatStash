@@ -1,4 +1,4 @@
-# WhatStash — Project Plan
+# WhatStash Project Plan
 
 WhatStash is a privacy-first, open-source WhatsApp status saver for Android.
 It is a fork of **WhatSave** by Christians Martínez A. ([@mardous](https://github.com/mardous)), licensed GPL-3.0.
@@ -36,15 +36,16 @@ Things to remove or fix: Firebase Analytics/Crashlytics (`normal` flavor), the K
 
 ---
 
-## Phase 0 — Import (done locally, not yet committed)
+## Phase 0: Import
 
 - [x] Clone original history into this repo, push to `strider-ape/WhatStash` `main`
 - [x] Verify the archived tarball (Gradle wrapper jar matches the official Gradle 8.7/8.8 checksum)
 - [x] Lay 2.1.0-beta.3 over the history
-- [ ] Commit: "Import WhatSave 2.1.0-beta.3 source by Christians Martínez A."
+- [x] Commit the import and push it
+- [x] Rewrite the README and credit the original author
 - [ ] Confirm it builds (`./gradlew assembleFdroidDebug`) before changing anything
 
-## Phase 1 — Rebrand and de-Google → **v1.0.0 (feature parity)**
+## Phase 1: Rebrand and de-Google (v1.0.0, feature parity)
 
 1. **Identity**
    - New `applicationId` (proposal: `io.github.striderape.whatstash`); keep the Kotlin package/namespace for now to keep the diff small (rename later if wanted)
@@ -68,7 +69,7 @@ Things to remove or fix: Firebase Analytics/Crashlytics (`normal` flavor), the K
    - Real device or emulator on Android 11+ and on Android 10 or older
    - WhatsApp and WhatsApp Business, images and videos, save/share/delete, catcher opt-in
 
-## Phase 2 — Better than the original → **v1.1**
+## Phase 2: Better than the original (v1.1)
 
 - **Expiry countdown** on each status ("gone in 3 h", from file modified time + 24 h)
 - **Duplicate detection** by content hash: "already saved" badge, never save the same status twice
@@ -76,13 +77,13 @@ Things to remove or fix: Firebase Analytics/Crashlytics (`normal` flavor), the K
 - **Frame grab**: save the current video frame as an image
 - **Saved library**: filter by type and date, favorites, storage used, bulk delete
 
-## Phase 3 — Automation → **v1.2**
+## Phase 3: Automation (v1.2)
 
 - **Auto-save** (opt-in): periodic WorkManager scan, filters (images / videos / both)
 - Optional "new statuses" notification
 - Home-screen widget and Quick Settings tile (new-status count, one tap to open)
 
-## Phase 4 — Privacy and tools → **v1.3**
+## Phase 4: Privacy and tools (v1.3)
 
 - **App lock** with biometrics / device credential (`androidx.biometric`)
 - **Hide saved files from the gallery** toggle (`.nomedia` in the save folder)
@@ -90,7 +91,7 @@ Things to remove or fix: Firebase Analytics/Crashlytics (`normal` flavor), the K
 - **Deleted-message catcher hardening**: clear opt-in onboarding, retention limit (e.g. 7/30 days), excluded from Android backups, one-tap wipe
 - **Chat without saving**: number from clipboard, recent numbers list
 
-## Phase 5 — Distribution
+## Phase 5: Distribution
 
 1. GitHub Releases (signed APK, changelog)
 2. IzzyOnDroid repo (picks up GitHub releases)
